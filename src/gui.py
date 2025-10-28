@@ -546,12 +546,12 @@ class ShipStatsApp(QMainWindow):
                 continue
             engine_row = engine_row.iloc[0]
             
-            # Calculate travel speed
+            # Calculate travel speed based on 1,000,000 units of cargo over 50,000 units distance. Result is in time units. Lower is better.
             travel_speed = compute_travel_speed(ship_row, engine_row)
             storage_cargo_max = ship_row.get('storage_cargo_max', 0)
             
             if travel_speed and travel_speed > 0 and storage_cargo_max > 0:
-                ratio = storage_cargo_max / travel_speed
+                ratio = ((1000000 / storage_cargo_max) / (50000 / travel_speed))
                 display_name = ship_row.get('display_name', ship_row.get('macro_name', 'Unknown'))
                 macro_name = ship_row.get('macro_name', 'Unknown')
                 
@@ -567,8 +567,8 @@ class ShipStatsApp(QMainWindow):
                     'is_selected': (ship_row.get('macro_name') == ship_macro)
                 })
         
-        # Sort by ratio (descending) and take top 5
-        ship_ratios.sort(key=lambda x: x['ratio'], reverse=True)
+        # Sort by ratio (ascending - lower is better) and take top 5
+        ship_ratios.sort(key=lambda x: x['ratio'], reverse=False)
         top_ships = ship_ratios[:5]
         
         if not top_ships:
@@ -587,7 +587,7 @@ class ShipStatsApp(QMainWindow):
         colors = ['#4CAF50' if s['is_selected'] else '#2196F3' for s in top_ships]
         
         bars = ax.barh(names, ratios, color=colors)
-        ax.set_xlabel('Cargo/Speed Ratio', fontsize=10)
+        ax.set_xlabel('Time to Transport 1M Cargo over 50K Distance (Lower is Better)', fontsize=9)
         ax.set_title(f'Top 5 {ship_size.upper()}-Size Ships with {engine_name}', fontsize=11)
         ax.grid(axis='x', alpha=0.3)
         
