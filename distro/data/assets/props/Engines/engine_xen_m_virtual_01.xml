@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Exported by: nick (192.168.3.52) on 2023-06-19 16:55:11-->
-<components>
-  <component name="engine_xen_m_virtual_01" class="engine">
-    <connections>
-      <connection name="ship" tags="component engine medium xenon" />
-    </connections>
-  </component>
-</components>

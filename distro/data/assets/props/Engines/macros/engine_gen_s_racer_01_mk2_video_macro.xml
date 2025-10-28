@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Exported by: Lino (192.168.3.190) on 2025-01-30 15:27:12-->
-<macros>
-  <macro name="engine_gen_s_racer_01_mk2_video_macro" class="destructible">
-    <component ref="engine_gen_s_racer_01_mk2_video" />
-  </macro>
-</macros>

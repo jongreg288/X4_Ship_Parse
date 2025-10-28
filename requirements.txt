@@ -1,0 +1,8 @@
+pandas>=2.0.0
+PyQt6>=6.0.0
+requests>=2.25.0
+
+# For building standalone executables (development only)
+pyinstaller>=5.0.0
+pyqt6
+lxml
