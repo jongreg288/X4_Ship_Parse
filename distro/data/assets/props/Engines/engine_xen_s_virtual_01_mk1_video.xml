@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported on 2024-04-04 09:26:03-->
+<components>
+  <component name="engine_xen_s_virtual_01_mk1_video" class="destructible">
+    <source geometry="assets\props\Engines\engine_xen_s_virtual_01_mk1_video_data" />
+    <layers>
+      <layer />
+    </layers>
+    <connections>
+      <connection name="space" tags="destructible" />
+      <connection name="position" tags="position" value="1" />
+      <connection name="ConnectionForpart_base" tags="part ">
+        <parts>
+          <part name="part_base">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_02_a" />
+                  <material id="2" ref="p2xenon.xen_p2_enginetrim_01_a" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="4.051698" y="3.53452" z="10.91535" />
+              <center x="0.008669734" y="-2.384e-07" z="-0.1301341" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+    </connections>
+  </component>
+</components>

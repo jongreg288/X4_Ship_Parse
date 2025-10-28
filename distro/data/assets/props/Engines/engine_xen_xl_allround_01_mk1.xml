@@ -1,0 +1,270 @@
+<?xml version="1.0"?>
+<components>
+	<component name="engine_xen_xl_allround_01_mk1" class="engine">
+		<source geometry="assets\props\Engines\engine_xen_xl_allround_01_mk1_data"/>
+		<layers>
+			<layer>
+				<waypoints/>
+				<lights/>
+			</layer>
+		</layers>
+		<connections>
+			<connection name="container" tags="contents" value="0"/>
+			<connection name="position" tags="position" value="1"/>
+			<connection name="Connection17" hidden="true" tags="part areadamage triggerpart nocollision ">
+				<offset>
+					<position x="0" y="0" z="-489.6346"/>
+				</offset>
+				<parts>
+					<part name="engine_damage">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="effects.lightcone_engine_xl_fire"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="86.8644" y="86.8644" z="534.0461"/>
+							<center x="0" y="0" z="0"/>
+						</size>
+					</part>
+				</parts>
+			</connection>
+			<connection name="speeddependant_con_inner" tags="part  speeddependent">
+				<offset/>
+				<parts>
+					<part name="part_main" wreck="part_main_wreck">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_alphatrims_01"/>
+									<material id="2" ref="generic.generic_tech_01"/>
+									<material id="3" ref="generic.generic_engines_01"/>
+								</materials>
+							</lod>
+							<lod index="1">
+								<materials>
+									<material id="1" ref="generic.generic_alphatrims_01"/>
+									<material id="2" ref="generic.generic_tech_01"/>
+									<material id="3" ref="generic.generic_engines_01"/>
+								</materials>
+							</lod>
+							<lod index="2">
+								<materials>
+									<material id="1" ref="generic.generic_alphatrims_01"/>
+									<material id="2" ref="generic.generic_tech_01"/>
+									<material id="3" ref="generic.generic_engines_01"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="92.34697" y="92.09784" z="54.3453"/>
+							<center x="-3.625107E-02" y="7.171631E-04" z="6.171526"/>
+						</size>
+						<lights>
+							<omni name="XU Omni01" shadow="0" r="255" g="108" b="52" range="300" shadowrange="300" lighteffect="1" lenseffect="enginesystems_xenon_engine_xl_02" trigger="1" intensity="1.5" specularintensity="1">
+								<lightanimations/>
+								<offset>
+									<position x="0" y="0" z="-19.49298"/>
+								</offset>
+							</omni>
+						</lights>
+					</part>
+				</parts>
+				<waypoints/>
+			</connection>
+			<connection name="Connection16" tags="rendereffect" parent="part_main">
+				<offset>
+					<position x="2.837005" y="0" z="-34.30884"/>
+				</offset>
+			</connection>
+			<connection name="Connection18" tags="fx nocollision part detail_l animation textureanimation speedscale_forward  ">
+				<offset>
+					<position x="0" y="0" z="4.644447"/>
+				</offset>
+				<animations>
+					<animation name="loop" start="1" end="50"/>
+				</animations>
+				<parts>
+					<part name="anim_engine_exhaust_small">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="effects.lightcone_engine_xl_exhaust"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="82.34616" y="82.34617" z="22.50643"/>
+							<center x="0.1328735" y="-7.926178E-02" z="-24.35969"/>
+						</size>
+						<size_raw>
+							<max x="82.34616" y="82.34617" z="22.50643"/>
+							<center x="0.1328697" y="-7.926178E-02" z="-24.35969"/>
+						</size_raw>
+						<uv_animations>
+							<uv_animation mapchannel="1">
+								<uv_property name="u_offset" controller="linear_float">
+									<key frame="0" value="1"/>
+									<key frame="50" value="0"/>
+								</uv_property>
+							</uv_animation>
+						</uv_animations>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection19" tags="fx nocollision part detail_l animation textureanimation speedscale_forward  ">
+				<offset>
+					<position x="9.874502E-02" y="-5.889928E-02" z="-40.14432"/>
+				</offset>
+				<animations>
+					<animation name="loop" start="1" end="50"/>
+				</animations>
+				<parts>
+					<part name="anim_engine_exhaust">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="effects.lightcone_engine_xl_exhaust"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="207.1688" y="204.0215" z="40.6895"/>
+							<center x="-5.39422E-06" y="3.501773E-07" z="4.970833"/>
+						</size>
+						<size_raw>
+							<max x="207.1688" y="204.0215" z="40.6895"/>
+							<center x="-5.39422E-06" y="3.501773E-07" z="4.970833"/>
+						</size_raw>
+						<uv_animations>
+							<uv_animation mapchannel="1">
+								<uv_property name="u_offset" controller="linear_float">
+									<key frame="0" value="1"/>
+									<key frame="50" value="0"/>
+								</uv_property>
+							</uv_animation>
+						</uv_animations>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection20" tags="fx nocollision part detail_l animation textureanimation speedscale_forward  ">
+				<offset>
+					<position x="9.874344E-02" y="-5.889893E-02" z="-25.15003"/>
+				</offset>
+				<animations>
+					<animation name="loop" start="1" end="50"/>
+				</animations>
+				<parts>
+					<part name="anim_engine_exhaust_distortion">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="effects.distortion_master_geometry_anim"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="190.4998" y="187.4914" z="13.60797"/>
+							<center x="-1.907349E-05" y="-3.051758E-05" z="-13.60794"/>
+						</size>
+						<size_raw>
+							<max x="190.4998" y="187.4914" z="13.60797"/>
+							<center x="-1.144409E-05" y="-2.288818E-05" z="-13.60794"/>
+						</size_raw>
+						<uv_animations>
+							<uv_animation mapchannel="1">
+								<uv_property name="u_offset" controller="linear_float">
+									<key frame="0" value="1"/>
+									<key frame="50" value="0"/>
+								</uv_property>
+							</uv_animation>
+						</uv_animations>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection21" tags="fx nocollision part detail_l animation textureanimation speedscale_forward  ">
+				<offset>
+					<position x="0.098745" y="-5.889925E-02" z="12.95612"/>
+				</offset>
+				<animations>
+					<animation name="loop" start="1" end="50"/>
+				</animations>
+				<parts>
+					<part name="anim_engine_flame">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="effects.lightcone_engine_xl_fire"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="84.078" y="72.81369" z="519.1149"/>
+							<center x="2.250075E-06" y="3.20375E-07" z="-519.1158"/>
+						</size>
+						<size_raw>
+							<max x="84.078" y="72.81369" z="519.1149"/>
+							<center x="2.250075E-06" y="3.20375E-07" z="-519.1158"/>
+						</size_raw>
+						<uv_animations>
+							<uv_animation mapchannel="1">
+								<uv_property name="u_offset" controller="linear_float">
+									<key frame="0" value="1"/>
+									<key frame="50" value="0"/>
+								</uv_property>
+							</uv_animation>
+						</uv_animations>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection22" tags="fx nocollision part detail_l animation textureanimation speedscale_forward  ">
+				<offset>
+					<position x="9.874499E-02" y="-5.889902E-02" z="12.11308"/>
+				</offset>
+				<animations>
+					<animation name="loop" start="1" end="50"/>
+				</animations>
+				<parts>
+					<part name="anim_engine_flame_distortion">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="effects.distortion_master_geometry_anim"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="86.27403" y="99.62067" z="469.9475"/>
+							<center x="8.643866E-04" y="-6.446742E-03" z="-469.9477"/>
+						</size>
+						<size_raw>
+							<max x="86.27403" y="99.62067" z="469.9475"/>
+							<center x="8.682013E-04" y="-6.446742E-03" z="-469.9477"/>
+						</size_raw>
+						<uv_animations>
+							<uv_animation mapchannel="1">
+								<uv_property name="u_offset" controller="linear_float">
+									<key frame="0" value="1"/>
+									<key frame="50" value="0"/>
+								</uv_property>
+							</uv_animation>
+						</uv_animations>
+					</part>
+				</parts>
+			</connection>
+			<connection name="connection_component01" tags="engine extralarge component standard ">
+				<offset/>
+			</connection>
+			<connection name="connection_booster01" tags="booster ">
+				<offset/>
+			</connection>
+			<connection name="con_aimtarget_01" tags="aimtarget ">
+				<offset>
+					<position x="0" y="0" z="2.031349"/>
+				</offset>
+			</connection>
+		</connections>
+	</component>
+</components>

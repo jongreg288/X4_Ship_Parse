@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<components>
+	<component name="thruster_gen_m_allround_01_mk2" class="engine">
+		<source geometry="assets\props\Engines\thruster_gen_m_allround_01_mk2_data"/>
+		<layers>
+			<layer>
+				<waypoints/>
+				<lights/>
+			</layer>
+		</layers>
+		<connections>
+			<connection name="container" tags="contents" value="0"/>
+			<connection name="position" tags="position" value="1"/>
+			<connection name="Connection01" tags="part  ">
+				<offset/>
+				<parts>
+					<part name="part_main">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="p1.multimat"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="1.104897" y="1.172548" z="2.294028"/>
+							<center x="-3.128052E-04" y="1.192093E-07" z="-0.1827973"/>
+						</size>
+					</part>
+				</parts>
+			</connection>
+			<connection name="EngineConnection01" tags="thruster medium component">
+				<offset/>
+			</connection>
+		</connections>
+	</component>
+</components>

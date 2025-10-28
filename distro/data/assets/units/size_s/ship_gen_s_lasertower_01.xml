@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported on 2025-06-25 17:26:28-->
+<components>
+  <component name="ship_gen_s_lasertower_01" class="ship_s">
+    <source geometry="assets\units\size_s\ship_gen_s_lasertower_01_data" />
+    <layers>
+      <layer />
+    </layers>
+    <connections>
+      <connection name="space" tags="ship_s ship" />
+      <connection name="con_engine_01" tags="engine small standard ">
+        <offset>
+          <position x="9.7e-09" y="0" z="0" />
+        </offset>
+      </connection>
+      <connection name="con_cockpit" tags="cockpit cockpit_visible ">
+        <offset>
+          <position x="9.7e-09" y="0" z="0" />
+        </offset>
+      </connection>
+      <connection name="con_weapon_001" tags="combat small standard weapon ">
+        <offset>
+          <position x="-2.6096e-06" y="0.7216117" z="25.5478" />
+          <quaternion qx="0" qy="2.384e-07" qz="0" qw="-1" />
+        </offset>
+      </connection>
+      <connection name="con_dockpos" tags="dockpos ">
+        <offset>
+          <position x="-1.3918e-06" y="-6.700885" z="15.80931" />
+          <quaternion qx="0" qy="2.384e-07" qz="0" qw="-1" />
+        </offset>
+      </connection>
+      <connection name="con_pickup" tags="pickup ">
+        <offset>
+          <position x="9.7e-09" y="0" z="0" />
+        </offset>
+      </connection>
+      <connection name="position" tags="position" value="1" />
+      <connection name="ConnectionForanim_main" tags="animation part ">
+        <animations>
+          <animation name="lasertower_inactive" start="1" end="2" />
+          <animation name="lasertower_activating" start="2" end="30" />
+          <animation name="lasertower_activeloop" start="30" end="60" />
+          <animation name="lasertower_deactivating" start="60" end="90" />
+        </animations>
+        <parts>
+          <part name="anim_main" wreck="anim_main_wreck">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_hulltexture_02" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_hulltexture_02" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_hulltexture_02" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="7.365205" y="4.401313" z="13.84468" />
+              <center x="-0.8288317" y="0.2449479" z="-3.442441" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_antenna_01" tags="animation iklink part " parent="anim_main">
+        <offset>
+          <position x="-1.8783e-06" y="-1.134014" z="5.764419" />
+        </offset>
+        <parts>
+          <part name="anim_antenna_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="4.6815" y="2.863037" z="5.009754" />
+              <center x="-2.91e-08" y="-1.393982" z="-2.068627" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_antenna_02" tags="animation iklink part " parent="anim_main">
+        <offset>
+          <position x="4.560502" y="1.163781" z="-10.18543" />
+        </offset>
+        <parts>
+          <part name="anim_antenna_02">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="3.992405" y="1.808356" z="13.12432" />
+              <center x="3.532451" y="0.2669301" z="12.39853" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_antenna_03" tags="animation iklink part " parent="anim_main">
+        <offset>
+          <position x="-4.411271" y="-1.711718" z="-5.43762" />
+        </offset>
+        <parts>
+          <part name="anim_antenna_03">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="3.104098" y="2.709324" z="5.797095" />
+              <center x="-4.768e-07" y="-0.8756875" z="-4.005979" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_barrel_01" tags="animation iklink part " parent="anim_main">
+        <offset>
+          <position x="-0.02080217" y="1.026695" z="-2.455966" />
+        </offset>
+        <parts>
+          <part name="anim_barrel_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="1.290456" y="2.263843" z="15.51236" />
+              <center x="0.02080778" y="4.768e-07" z="3.630272" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_barrel_02" tags="animation iklink part " parent="anim_barrel_01">
+        <offset>
+          <position x="1.0543e-06" y="0" z="-2.738461" />
+        </offset>
+        <parts>
+          <part name="anim_barrel_02">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_fx_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_fx_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_fx_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="1.068119" y="2.035113" z="20.69513" />
+              <center x="0.02080589" y="5.96e-07" z="9.761747" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-9.537e-07" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionFordetail_l_main" tags="detail_l forceoutline nocollision part ">
+        <offset>
+          <quaternion qx="8.43e-08" qy="8.43e-08" qz="-0.7071066" qw="-0.7071069" />
+        </offset>
+        <parts>
+          <part name="detail_l_main">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_hulltexture_02" />
+                  <material id="3" ref="p2generic.gen_p2_alphatexture_02" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="11.20769" y="6.851073" z="15.69897" />
+              <center x="6.887307" y="0.2672958" z="-1.742712" />
+            </size>
+            <offset>
+              <quaternion qx="0" qy="0" qz="-5.96e-08" qw="-1" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionFordetail_xl_antenna_03" tags="animation detail_xl forceoutline iklink part " parent="anim_antenna_03">
+        <offset>
+          <position x="-1.576121" y="-3.070933" z="-9.123739" />
+          <quaternion qx="0.7071068" qy="0" qz="0" qw="-0.7071068" />
+        </offset>
+        <parts>
+          <part name="detail_xl_antenna_03">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_alphatexture_02" />
+                  <material id="2" ref="p2generic.gen_p2_alphatexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="8.654448" y="3.889332" z="4.533125" />
+              <center x="0" y="-2.776" z="2.655668" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-1.457e-07" />
+              <quaternion qx="5.96e-08" qy="0" qz="0" qw="-1" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionFordetail_l_antenna_02" tags="detail_l forceoutline nocollision part " parent="anim_antenna_02">
+        <offset>
+          <position x="2.468348" y="0.1380949" z="0.6587105" />
+        </offset>
+        <parts>
+          <part name="detail_l_antenna_02">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_alphatexture_02" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="5.733227" y="3.667885" z="15.13603" />
+              <center x="1.604971" y="0.2412121" z="8.784803" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010012085964340224" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="-2.716387" y="1.645937" z="9.586617" />
+          <quaternion qx="-1.377e-07" qy="-0.7071068" qz="0.7071068" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01001" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770412" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346588" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-8.5e-09" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010022085964276224" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="3.345195" y="2.672519" z="-15.87858" />
+          <quaternion qx="-1.377e-07" qy="-0.7071068" qz="0.7071068" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01002" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770411" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346493" />
+            </size>
+            <offset>
+              <position x="0" y="9.537e-07" z="6.7e-09" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010032085964277888" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="-3.345192" y="2.672518" z="-15.87858" />
+          <quaternion qx="-1.377e-07" qy="-0.7071068" qz="0.7071068" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01003" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770411" z="0.7383394" />
+              <center x="0" y="4.768e-07" z="-0.01346493" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="6.7e-09" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010042085965881664" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="-2.716387" y="0.8605754" z="9.586617" />
+          <quaternion qx="1.377e-07" qy="-0.7071066" qz="-0.7071069" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01004" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770411" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346588" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="2.25e-08" />
+              <quaternion qx="-5.96e-08" qy="0" qz="0" qw="-1" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010052085965831808" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="-3.708277" y="2.250602" z="-15.87858" />
+          <quaternion qx="-0.5" qy="-0.5" qz="-0.5" qw="-0.5000001" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01005" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770411" z="0.7383394" />
+              <center x="0" y="4.768e-07" z="-0.01346493" />
+            </size>
+            <offset>
+              <position x="-4.15e-08" y="0" z="0" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010062085965878208" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="-3.345192" y="1.887157" z="-15.87858" />
+          <quaternion qx="1.377e-07" qy="-0.7071066" qz="-0.7071069" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01006" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770412" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346493" />
+            </size>
+            <offset>
+              <position x="0" y="9.537e-07" z="5.01e-08" />
+              <quaternion qx="-5.96e-08" qy="0" qz="0" qw="-1" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010072085965879552" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="3.70828" y="2.250602" z="-15.87858" />
+          <quaternion qx="-0.4999999" qy="0.4999998" qz="0.5000001" qw="-0.5000002" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01007" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770411" z="0.7383394" />
+              <center x="0" y="4.768e-07" z="-0.01346493" />
+            </size>
+            <offset>
+              <position x="4.15e-08" y="0" z="0" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010082085965834752" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="-3.079473" y="1.224021" z="9.586617" />
+          <quaternion qx="-0.5" qy="-0.5" qz="-0.5" qw="-0.5000001" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01008" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770412" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346588" />
+            </size>
+            <offset>
+              <position x="5.9e-09" y="0" z="0" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010092085965835200" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="3.079471" y="1.224021" z="9.586617" />
+          <quaternion qx="0.5000013" qy="0.5000013" qz="-0.4999987" qw="-0.4999987" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01009" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770412" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346588" />
+            </size>
+            <offset>
+              <position x="-5.9e-09" y="0" z="0" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010102085964474304" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="2.716385" y="0.8605754" z="9.586617" />
+          <quaternion qx="0.7071069" qy="6.18e-08" qz="1.686e-07" qw="-0.7071066" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01010" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770411" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346588" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-2.95e-08" />
+              <quaternion qx="-5.96e-08" qy="0" qz="0" qw="-1" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_010112085964472832" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="3.345195" y="1.887157" z="-15.87858" />
+          <quaternion qx="1.377e-07" qy="-0.7071066" qz="-0.7071069" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01011" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770412" z="0.7383394" />
+              <center x="0" y="4.768e-07" z="-0.01346493" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="5.01e-08" />
+              <quaternion qx="-5.96e-08" qy="0" qz="0" qw="-1" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_thruster_012085968287168" group=" " tags="detail_xl fx nocollision part speedscale ">
+        <offset>
+          <position x="2.716385" y="1.645937" z="9.586617" />
+          <quaternion qx="-1.377e-07" qy="-0.7071068" qz="0.7071068" qw="-1.377e-07" />
+        </offset>
+        <parts>
+          <part name="anim_thruster_01" ref="thruster_ship_s_03.anim_thruster_01">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_thruster_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="0.1770411" y="0.1770412" z="0.7383399" />
+              <center x="0" y="4.768e-07" z="-0.01346588" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-8.5e-09" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+    </connections>
+  </component>
+</components>

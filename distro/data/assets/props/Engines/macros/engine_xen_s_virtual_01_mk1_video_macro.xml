@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Lino (192.168.3.107) on 2024-04-03 14:04:05-->
+<macros>
+  <macro name="engine_xen_s_virtual_01_mk1_video_macro" class="destructible">
+    <component ref="engine_xen_s_virtual_01_mk1_video" />
+  </macro>
+</macros>

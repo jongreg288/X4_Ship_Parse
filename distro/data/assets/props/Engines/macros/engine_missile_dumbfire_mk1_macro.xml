@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Michael (192.168.3.53) on 2024-11-18 16:13:09-->
+<macros>
+  <macro name="engine_missile_dumbfire_mk1_macro" class="engine">
+    <component ref="generic_engine" />
+    <properties>
+      <identification hidden="1" mk="1" />
+      <thrust forward="57.887" reverse="0" strafe="0" pitch="0" yaw="0" roll="0" />
+      <hull integrated="1" />
+    </properties>
+  </macro>
+</macros>

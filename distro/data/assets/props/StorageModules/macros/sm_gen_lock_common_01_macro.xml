@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Matthias (192.168.3.144) at 16.10.2019_17-00-02-->
+<macros>
+  <macro name="sm_gen_lock_common_01_macro" class="lock">
+    <component ref="sm_gen_lock_common_01" />
+    <properties>
+      <identification name="{20109,9501}" />
+      <hull max="2" />
+      <effects>
+        <explosion ref="explosion_lockbox_lock" />
+      </effects>
+    </properties>
+  </macro>
+</macros>

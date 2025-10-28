@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: aj (192.168.3.70) on 2024-11-29 13:35:48-->
+<macros>
+  <macro name="engine_tel_s_travel_01_mk1_macro" class="engine">
+    <component ref="engine_tel_s_travel_01_mk1" />
+    <properties>
+      <identification name="{20107,1424}" basename="{20107,1421}" shortname="{20107,1425}" makerrace="teladi" description="{20107,1422}" mk="1" />
+      <boost duration="19.8" recharge="120" thrust="3.54" acceleration="2" attack="0.25" release="5" coast="1.2" />
+      <travel charge="4" thrust="17.73" attack="14.76" release="24" />
+      <thrust forward="355.2" reverse="390.72" />
+      <hull integrated="1" />
+      <effects>
+        <boosting ref="arg_boost_fx_s" />
+        <traveling ref="gen_traveldrive_fx_s" />
+      </effects>
+      <sounds>
+        <enginedetail ref="enginedetail_ship_02" />
+      </sounds>
+      <decelerationcurve>
+        <point position="1.01" value="1" />
+        <point position="1.25" value="4" />
+        <point position="1.75" value="6" />
+        <point position="2.1" value="8" />
+        <point position="2.5" value="10" />
+      </decelerationcurve>
+      <strafecurve>
+        <point position="1.01" value="1" />
+        <point position="1.25" value="4" />
+        <point position="1.75" value="6" />
+        <point position="2.1" value="8" />
+        <point position="2.5" value="10" />
+      </strafecurve>
+    </properties>
+  </macro>
+</macros>

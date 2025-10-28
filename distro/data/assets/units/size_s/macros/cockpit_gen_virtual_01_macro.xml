@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Mike (192.168.3.101) at 12.07.2017_10-47-18-->
+<macros>
+  <macro name="cockpit_gen_virtual_01_macro" class="cockpit">
+    <component ref="generic_cockpit" />
+    <properties>
+      <identification name="{20109,5401}" unique="0" />
+    </properties>
+  </macro>
+</macros>

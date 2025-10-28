@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: aj (192.168.3.62) on 2024-12-13 12:22:37-->
+<macros>
+  <macro name="engine_tfm_xl_allround_01_mk1_macro" class="engine">
+    <component ref="engine_tfm_xl_allround_01_mk1" />
+    <properties>
+      <identification name="{20107,4034}" basename="{20107,4031}" shortname="{20107,4035}" makerrace="xenon" description="{20107,4032}" mk="1" />
+      <boost duration="60" recharge="150" thrust="2" acceleration="1.5" attack="10" release="0" coast="0" />
+      <travel charge="30" thrust="18" attack="25" release="25" />
+      <thrust forward="24979" reverse="22481" />
+      <hull max="24386" threshold="0.3" />
+      <effects>
+        <traveling ref="gen_traveldrive_fx_xl" />
+      </effects>
+      <decelerationcurve>
+        <point position="1.01" value="1" />
+        <point position="1.1" value="2" />
+        <point position="1.5" value="5" />
+        <point position="2.1" value="14" />
+        <point position="2.5" value="20" />
+      </decelerationcurve>
+      <strafecurve>
+        <point position="1.01" value="1" />
+        <point position="1.1" value="2" />
+        <point position="1.5" value="5" />
+        <point position="2.1" value="14" />
+        <point position="2.5" value="30" />
+      </strafecurve>
+    </properties>
+  </macro>
+</macros>

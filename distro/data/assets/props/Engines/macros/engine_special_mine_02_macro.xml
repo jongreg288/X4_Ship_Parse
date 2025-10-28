@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Michael (192.168.3.53) on 2024-11-18 16:13:21-->
+<macros>
+  <macro name="engine_special_mine_02_macro" class="engine">
+    <component ref="generic_engine" />
+    <properties>
+      <identification hidden="1" />
+      <thrust forward="120" reverse="40" strafe="40" pitch="80" yaw="40" roll="80" />
+      <hull integrated="1" />
+    </properties>
+  </macro>
+</macros>

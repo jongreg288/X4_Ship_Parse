@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported on 2024-07-05 17:42:48-->
+<components>
+  <component name="ship_kha_xl_battleship_01" class="ship_xl">
+    <source geometry="assets\units\size_xl\ship_kha_xl_battleship_01_data" />
+    <layers>
+      <layer />
+    </layers>
+    <connections>
+      <connection name="space" tags="ship_xl ship" />
+      <connection name="position" tags="position" value="1" />
+      <connection name="con_engine_01" group="group_engines " tags="engine extralarge khaak ship_kha_xl_battleship_01 ">
+        <offset>
+          <position x="1.52588e-05" y="0" z="-705.2692" />
+          <quaternion qx="0" qy="0" qz="0.8660254" qw="-0.5" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_01" group="group_top_mid_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-196.8282" y="115.8069" z="-386.3234" />
+          <quaternion qx="0.2339505" qy="-0.6626144" qz="-0.4606868" qw="-0.5421966" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_02" group="group_top_mid_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-208.4586" y="95.81063" z="-386.6133" />
+          <quaternion qx="0.2339505" qy="-0.6626144" qz="-0.4606868" qw="-0.5421966" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_03" group="  group_mid_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-187.2631" y="-109.7626" z="-356.465" />
+          <quaternion qx="-0.6629862" qy="0.2319843" qz="-0.541273" qw="-0.4622295" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_04" group="  group_mid_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="187.1968" y="-109.8632" z="-356.4662" />
+          <quaternion qx="0.5412711" qy="0.4622318" qz="0.6629869" qw="-0.2319821" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_05" group="  group_mid_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-198.8998" y="-89.77023" z="-356.7745" />
+          <quaternion qx="-0.6629862" qy="0.2319843" qz="-0.541273" qw="-0.4622295" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_06" group="  group_top_mid_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="196.762" y="115.9075" z="-386.3244" />
+          <quaternion qx="-0.4606868" qy="-0.5421965" qz="0.2339507" qw="-0.6626143" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_07" group="  group_mid_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="198.845" y="-89.87748" z="-356.7705" />
+          <quaternion qx="0.5412711" qy="0.4622318" qz="0.6629869" qw="-0.2319821" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_08" group="  group_top_mid_upper_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="74.79709" y="223.6767" z="-400.2484" />
+          <quaternion qx="-0.2778242" qy="-0.6026337" qz="0.008554441" qw="-0.7480463" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_09" group="  group_top_mid_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="208.4038" y="95.91787" z="-386.6092" />
+          <quaternion qx="-0.4606868" qy="-0.5421965" qz="0.2339507" qw="-0.6626143" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_10" group="  group_top_mid_upper_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-95.54496" y="213.8224" z="-397.4886" />
+          <quaternion qx="0.008554213" qy="-0.7480462" qz="-0.277824" qw="-0.6026339" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_11" group="  group_top_mid_upper_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="95.54744" y="213.8284" z="-397.4858" />
+          <quaternion qx="-0.2778242" qy="-0.6026337" qz="0.008554441" qw="-0.7480463" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_12" group="  group_mid_top_back " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-11.62738" y="121.4247" z="-667.0182" />
+          <quaternion qx="0.3134238" qy="-0.6338496" qz="0.3134242" qw="-0.6338497" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_13" group="  group_top_mid_upper_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-74.79951" y="223.6828" z="-400.2455" />
+          <quaternion qx="0.008554213" qy="-0.7480462" qz="-0.277824" qw="-0.6026339" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_14" group="  group_mid_bottom_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-109.4382" y="-50.12434" z="-667.7949" />
+          <quaternion qx="0.7009666" qy="-0.07430273" qz="-0.4141832" qw="-0.5758274" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_15" group="  group_mid_top_back " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="11.50702" y="121.4289" z="-667.0238" />
+          <quaternion qx="0.3134238" qy="-0.6338496" qz="0.3134242" qw="-0.6338497" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_16" group="  group_mid_bottom_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="109.4935" y="-50.01752" z="-667.7888" />
+          <quaternion qx="-0.4141828" qy="-0.5758275" qz="0.7009668" qw="-0.07430267" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_17" group="  group_mid_bottom_left " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-97.98048" y="-70.22169" z="-667.9342" />
+          <quaternion qx="0.7009666" qy="-0.07430273" qz="-0.4141832" qw="-0.5758274" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_18" group="  group_mid_bottom_right " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="98.04417" y="-70.11951" z="-667.9387" />
+          <quaternion qx="-0.4141828" qy="-0.5758275" qz="0.7009668" qw="-0.07430267" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_19" group="  group_engines " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-87.90382" y="48.30069" z="-698.4576" />
+          <quaternion qx="0.2999517" qy="0.1744045" qz="-0.4692789" qw="-0.812028" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_20" group="  group_engines " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-85.82761" y="51.90907" z="-698.4504" />
+          <quaternion qx="0.2999517" qy="0.1744045" qz="-0.4692789" qw="-0.812028" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_21" group="  group_engines " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="85.74956" y="51.90601" z="-698.4576" />
+          <quaternion qx="0.3010147" qy="-0.1725638" qz="0.4685976" qw="-0.8124212" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_22" group="  group_engines " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="87.8364" y="48.30377" z="-698.4504" />
+          <quaternion qx="0.3010147" qy="-0.1725638" qz="0.4685976" qw="-0.8124212" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_23" group="  group_engines " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-2.080987" y="-100.2116" z="-698.446" />
+          <quaternion qx="0.9380432" qy="8.7467e-06" qz="2.21573e-05" qw="-0.3465183" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_24" group="  group_mid_bottom " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="-11.50705" y="-222.2333" z="-359.5305" />
+          <quaternion qx="-0.6863655" qy="0.1700067" qz="0.6863657" qw="-0.1700067" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_25" group="  group_mid_bottom " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="11.62735" y="-222.227" z="-359.5338" />
+          <quaternion qx="-0.6863655" qy="0.1700067" qz="0.6863656" qw="-0.1700068" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_26" group="  group_engines " tags="hittable khaak medium shield ">
+        <offset>
+          <position x="2.082079" y="-100.2115" z="-698.4459" />
+          <quaternion qx="0.9380432" qy="8.7467e-06" qz="2.21573e-05" qw="-0.3465183" />
+        </offset>
+      </connection>
+      <connection name="con_shield_xl_01" tags="extralarge khaak shield ">
+        <offset>
+          <position x="-205.7691" y="-9.665e-07" z="-484.364" />
+          <quaternion qx="0.03311444" qy="0.03311444" qz="-0.706331" qw="-0.706331" />
+        </offset>
+      </connection>
+      <connection name="con_shield_xl_02" tags="extralarge khaak shield ">
+        <offset>
+          <position x="205.7584" y="-2.898e-07" z="-484.3964" />
+          <quaternion qx="0.706331" qy="0.706331" qz="-0.03311452" qw="-0.03311452" />
+        </offset>
+      </connection>
+      <connection name="con_shield_xl_03" tags="extralarge khaak shield ">
+        <offset>
+          <position x="-2.533e-07" y="-221.552" z="-459.4473" />
+          <quaternion qx="0" qy="0" qz="-1" qw="-1.947e-07" />
+        </offset>
+      </connection>
+      <connection name="con_shield_xl_04" tags="extralarge khaak shield ">
+        <offset>
+          <position x="5.86e-07" y="-194.3438" z="-557.4059" />
+          <quaternion qx="1.9e-08" qy="0.2285169" qz="-0.9735399" qw="-4.404e-07" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_01" group="group_top_mid_left " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="-196.5455" y="101.9822" z="-367.6278" />
+          <quaternion qx="-0.160327" qy="-0.08514844" qz="-0.4911828" qw="-0.8519298" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_02" group="  group_mid_right " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="199.2" y="-103.7648" z="-375.4185" />
+          <quaternion qx="-0.8515391" qy="-0.4908834" qz="-0.0860661" qw="-0.162811" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_03" group="  group_top_mid_right " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="196.4791" y="102.0963" z="-367.6261" />
+          <quaternion qx="-0.1603267" qy="0.08514835" qz="0.4911829" qw="-0.8519299" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_04" group="  group_top_mid_upper_right " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="79.66177" y="212.2565" z="-380.5851" />
+          <quaternion qx="-0.2025001" qy="-0.955075" qz="-0.1904025" qw="-0.1028223" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_05" group="  group_top_mid_upper_left " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="-79.66171" y="212.2565" z="-380.5851" />
+          <quaternion qx="-0.1904025" qy="-0.1028222" qz="-0.2024999" qw="-0.955075" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_06" group="  group_mid_top_back " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="-0.06607056" y="137.4557" z="-654.779" />
+          <quaternion qx="0.4432484" qy="0" qz="3.44e-07" qw="-0.8963988" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_07" group="  group_mid_bottom_left " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="-116.7343" y="-67.69857" z="-654.4291" />
+          <quaternion qx="0.202787" qy="0.3546316" qz="-0.7885298" qw="-0.4597116" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_08" group="  group_mid_bottom_right " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="116.7997" y="-67.5838" z="-654.4283" />
+          <quaternion qx="0.2027869" qy="-0.3546316" qz="0.7885298" qw="-0.4597115" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_09" group="  group_mid_bottom " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="0.06607056" y="-212.8184" z="-341.6936" />
+          <quaternion qx="-1.82e-08" qy="0.2404258" qz="0.9706675" qw="-7.33e-08" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_10" group="  group_mid_left " tags="combat khaak large missile turret ">
+        <offset>
+          <position x="-199.2665" y="-103.6506" z="-375.4202" />
+          <quaternion qx="-0.8515399" qy="0.4908834" qz="0.08606421" qw="-0.1628079" />
+        </offset>
+      </connection>
+      <connection name="ConnectionFordetail_s_main" tags="detail_s forceoutline nocollision part ">
+        <parts>
+          <part name="detail_s_main">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_fx_01" />
+                  <material id="3" ref="p2generic.gen_p2_alphatexture_01" />
+                  <material id="4" ref="p2generic.gen_p2_alphatexture_02" />
+                  <material id="5" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="6" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="307.9278" y="254.8717" z="761.179" />
+              <center x="-7.6294e-06" y="0" z="31.76703" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForpart_main" tags="part ">
+        <parts>
+          <part name="part_main" wreck="part_main_wreck">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="232.4089" y="239.9305" z="699.7218" />
+              <center x="0" y="1.655632" z="16.51071" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="con_cockpit_01" tags="cockpit cockpit_visible ">
+        <offset>
+          <position x="0" y="158.5344" z="-245.3545" />
+        </offset>
+      </connection>
+      <connection name="con_countermeasures_03" tags="countermeasures ">
+        <offset>
+          <position x="-189.9732" y="-0.1144333" z="-584.5744" />
+          <quaternion qx="0" qy="0.8660254" qz="0" qw="-0.5" />
+        </offset>
+      </connection>
+      <connection name="con_countermeasures_04" tags="countermeasures ">
+        <offset>
+          <position x="190.7538" y="-0.1144333" z="-584.0175" />
+          <quaternion qx="0" qy="-0.8870108" qz="0" qw="-0.4617486" />
+        </offset>
+      </connection>
+      <connection name="con_dock_xs_01" tags="dock_xs ">
+        <offset>
+          <position x="0" y="175.8175" z="-612.1094" />
+          <quaternion qx="0.7071069" qy="0" qz="0" qw="-0.7071066" />
+        </offset>
+      </connection>
+      <connection name="ConnectionForanim_hatch" tags="anim_dockdoor animation detail_xl forceoutline nocollision part ">
+        <offset>
+          <position x="0" y="177.3797" z="-612.1094" />
+        </offset>
+        <animations>
+          <animation name="dockingbay_closed" start="1" end="2" />
+          <animation name="dockingbay_opening" start="2" end="30" />
+          <animation name="dockingbay_open" start="30" end="31" />
+          <animation name="dockingbay_closing" start="31" end="60" />
+        </animations>
+        <parts>
+          <part name="anim_hatch">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="1.5" y="0.08248901" z="2.997162" />
+              <center x="0" y="-0.05036926" z="1.497131" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_array_inside" tags="animation part ">
+        <offset>
+          <position x="0" y="0" z="555.1287" />
+        </offset>
+        <animations>
+          <animation name="loop" start="1" end="2000" />
+        </animations>
+        <parts>
+          <part name="anim_array_inside" wreck="anim_array_inside_wreck">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="86.39682" y="81.56668" z="332.5792" />
+              <center x="0" y="7.6294e-06" z="51.02832" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionFordetail_s_array_inside" tags="detail_s forceoutline nocollision part " parent="anim_array_inside">
+        <offset>
+          <position x="0" y="0" z="87.03906" />
+        </offset>
+        <parts>
+          <part name="detail_s_array_inside">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_alphatexture_01" />
+                  <material id="3" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="4" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="96.08266" y="83.25066" z="351.1881" />
+              <center x="-1.52588e-05" y="-3.8147e-05" z="-25.80957" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-6.10352e-05" />
+            </offset>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_array_outside" tags="animation part ">
+        <offset>
+          <position x="0" y="0" z="505.2344" />
+        </offset>
+        <animations>
+          <animation name="loop" start="1" end="2000" />
+        </animations>
+        <parts>
+          <part name="anim_array_outside" wreck="anim_array_outside_wreck">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="1">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="2">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+              <lod index="3">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="326.1923" y="345.3693" z="774.1838" />
+              <center x="-3.05176e-05" y="-0.0001525879" z="46.44159" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="con_countermeasures_01" tags="countermeasures " parent="anim_array_outside">
+        <offset>
+          <position x="0.2395883" y="-67.12643" z="818.7725" />
+        </offset>
+      </connection>
+      <connection name="con_countermeasures_02" tags="countermeasures " parent="anim_array_outside">
+        <offset>
+          <position x="0.2288344" y="64.03452" z="818.8275" />
+          <quaternion qx="0" qy="-1.192e-07" qz="0" qw="-1" />
+        </offset>
+      </connection>
+      <connection name="con_countermeasures_05" tags="countermeasures " parent="anim_array_outside">
+        <offset>
+          <position x="-51.57984" y="-345.2261" z="-723.7482" />
+          <quaternion qx="1.252e-07" qy="0.6427876" qz="-0.7660445" qw="-1.492e-07" />
+        </offset>
+      </connection>
+      <connection name="con_countermeasures_06" tags="countermeasures " parent="anim_array_outside">
+        <offset>
+          <position x="51.57981" y="345.2261" z="-723.7482" />
+          <quaternion qx="0.6427877" qy="0" qz="0" qw="-0.7660444" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_27" group="   group_front_top " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="11.50705" y="153.2894" z="-74.379" />
+          <quaternion qx="-0.008250579" qy="-0.7070585" qz="-0.008250585" qw="-0.7070588" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_28" group="   group_front_top " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="-11.62735" y="153.2823" z="-74.37918" />
+          <quaternion qx="-0.008250579" qy="-0.7070585" qz="-0.008250585" qw="-0.7070588" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_29" group="     group_front_top_right  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="126.635" y="86.94436" z="-73.31442" />
+          <quaternion qx="-0.3723285" qy="-0.6011419" qz="0.33248" qw="-0.6240649" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_30" group="    group_front_top_right  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="138.2713" y="66.94942" z="-73.31406" />
+          <quaternion qx="-0.3723285" qy="-0.6011419" qz="0.33248" qw="-0.6240649" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_31" group="   group_front_bottom  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="11.50705" y="-151.2828" z="-43.34381" />
+          <quaternion qx="-0.7070938" qy="-0.004298921" qz="-0.7070937" qw="-0.004298922" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_32" group="     group_front_bottom_right  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="137.0051" y="-65.71172" z="-74.35199" />
+          <quaternion qx="-0.6118164" qy="-0.3545148" qz="0.6118163" qw="-0.3545148" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_34" group="   group_front_top_left  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="-138.2655" y="66.94601" z="-73.31439" />
+          <quaternion qx="0.3324798" qy="-0.624065" qz="-0.3723285" qw="-0.6011419" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_35" group="    group_front_bottom_left  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="-125.5053" y="-85.78548" z="-74.35193" />
+          <quaternion qx="0.6118159" qy="-0.3545155" qz="-0.611816" qw="-0.3545155" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_36" group="   group_front_bottom  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="-11.62735" y="-151.2757" z="-43.3439" />
+          <quaternion qx="-0.7070938" qy="-0.004298921" qz="-0.7070937" qw="-0.004298922" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_37" group="    group_front_top_left " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="-126.6415" y="86.94808" z="-73.31403" />
+          <quaternion qx="0.3324798" qy="-0.624065" qz="-0.3723285" qw="-0.6011419" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_38" group="    group_front_bottom_left  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="-137.0157" y="-65.71779" z="-74.35193" />
+          <quaternion qx="0.6118159" qy="-0.3545155" qz="-0.611816" qw="-0.3545155" />
+        </offset>
+      </connection>
+      <connection name="con_shield_m_39" group="     group_front_bottom_right  " tags="hittable khaak medium shield " parent="anim_array_outside">
+        <offset>
+          <position x="125.5071" y="-85.78646" z="-74.35199" />
+          <quaternion qx="-0.6118164" qy="-0.3545148" qz="0.6118163" qw="-0.3545148" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_11" group="   group_front_top " tags="combat hittable khaak large missile turret " parent="anim_array_outside">
+        <offset>
+          <position x="-0.06607056" y="152.8533" z="-54.20752" />
+          <quaternion qx="-0.01118902" qy="0" qz="0" qw="-0.9999374" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_12" group="    group_front_top_right  " tags="combat hittable khaak large missile turret " parent="anim_array_outside">
+        <offset>
+          <position x="131.3253" y="76.28415" z="-53.18762" />
+          <quaternion qx="-0.02817706" qy="0.01620905" qz="0.4983749" qw="-0.866352" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_13" group="   group_front_bottom  " tags="combat hittable khaak large missile turret " parent="anim_array_outside">
+        <offset>
+          <position x="-0.06607056" y="-151.5268" z="-63.51151" />
+          <quaternion qx="-0.9999815" qy="0" qz="0" qw="-0.006079592" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_14" group="     group_front_bottom_right  " tags="combat hittable khaak large missile turret " parent="anim_array_outside">
+        <offset>
+          <position x="131.2552" y="-75.75542" z="-54.18286" />
+          <quaternion qx="-8.68e-08" qy="-4.33e-08" qz="0.865239" qw="-0.5013596" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_15" group="    group_front_top_left " tags="combat hittable khaak large missile turret " parent="anim_array_outside">
+        <offset>
+          <position x="-131.3056" y="76.27272" z="-53.18912" />
+          <quaternion qx="-0.02815172" qy="-0.01625339" qz="-0.4997355" qw="-0.8655679" />
+        </offset>
+      </connection>
+      <connection name="con_turret_l_16" group="    group_front_bottom_left  " tags="combat hittable khaak large missile turret " parent="anim_array_outside">
+        <offset>
+          <position x="-131.2552" y="-75.75545" z="-54.1828" />
+          <quaternion qx="0" qy="0" qz="-0.8652384" qw="-0.5013607" />
+        </offset>
+      </connection>
+      <connection name="ConnectionFordetail_s_array_outside" tags="detail_s forceoutline nocollision part " parent="anim_array_outside">
+        <offset>
+          <position x="-4.0886e-06" y="-6.81168e-05" z="37.32031" />
+          <quaternion qx="0" qy="0" qz="0.5000007" qw="-0.866025" />
+        </offset>
+        <parts>
+          <part name="detail_s_array_outside">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2generic.gen_p2_alphatexture_01" />
+                  <material id="2" ref="p2generic.gen_p2_fx_01" />
+                  <material id="3" ref="p2generic.gen_p2_hulltexture_01" />
+                  <material id="4" ref="p2generic.gen_p2_hulltexture_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="341.2222" y="357.1824" z="813.9971" />
+              <center x="-0.0001179817" y="6.81168e-05" z="0.9829102" />
+            </size>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_lights_array_inside" tags="animation detail_s forceoutline nocollision part textureanimation " parent="anim_array_inside">
+        <offset>
+          <position x="0" y="0" z="87.03906" />
+        </offset>
+        <animations>
+          <animation name="loop" start="1" end="100" />
+        </animations>
+        <parts>
+          <part name="anim_lights_array_inside">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_gradientcolour_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="96.53717" y="83.64538" z="350.7554" />
+              <center x="-7.6294e-06" y="-5.34058e-05" z="-24.85669" />
+            </size>
+            <offset>
+              <position x="0" y="0" z="-6.10352e-05" />
+            </offset>
+            <uv_animations>
+              <uv_animation rotaroundcenter="1" mapchannel="1">
+                <uv_property name="u_offset" controller="linear_float">
+                  <key frame="1" value="-0.08" />
+                  <key frame="2" value="-0.08" />
+                  <key frame="3" value="0" />
+                  <key frame="21" value="0" />
+                  <key frame="22" value="-0.08" />
+                  <key frame="32" value="-0.08" />
+                  <key frame="33" value="0" />
+                  <key frame="36" value="0" />
+                  <key frame="37" value="-0.08" />
+                  <key frame="42" value="-0.08" />
+                  <key frame="43" value="0" />
+                  <key frame="46" value="0" />
+                  <key frame="47" value="-0.08" />
+                  <key frame="52" value="-0.08" />
+                  <key frame="53" value="0" />
+                  <key frame="56" value="0" />
+                  <key frame="57" value="-0.08" />
+                  <key frame="100" value="-0.08" />
+                </uv_property>
+                <uv_property name="v_offset" controller="linear_float">
+                  <key frame="1" value="0" />
+                  <key frame="2" value="0" />
+                  <key frame="3" value="0" />
+                  <key frame="21" value="0" />
+                  <key frame="22" value="0" />
+                  <key frame="32" value="0" />
+                  <key frame="33" value="0" />
+                  <key frame="36" value="0" />
+                  <key frame="37" value="0" />
+                  <key frame="42" value="0" />
+                  <key frame="43" value="0" />
+                  <key frame="46" value="0" />
+                  <key frame="47" value="0" />
+                  <key frame="52" value="0" />
+                  <key frame="53" value="0" />
+                  <key frame="56" value="0" />
+                  <key frame="57" value="0" />
+                  <key frame="100" value="0" />
+                </uv_property>
+              </uv_animation>
+            </uv_animations>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_lights_array_outside" tags="animation detail_xs forceoutline nocollision part textureanimation " parent="anim_array_outside">
+        <offset>
+          <position x="-4.0886e-06" y="-6.81168e-05" z="37.32031" />
+          <quaternion qx="0" qy="0" qz="0.5000007" qw="-0.866025" />
+        </offset>
+        <animations>
+          <animation name="loop" start="1" end="100" />
+        </animations>
+        <parts>
+          <part name="anim_lights_array_outside">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_gradientcolour_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="342.1438" y="357.8952" z="815.5002" />
+              <center x="-0.0001179817" y="9.86344e-05" z="0" />
+            </size>
+            <uv_animations>
+              <uv_animation rotaroundcenter="1" mapchannel="1">
+                <uv_property name="u_offset" controller="linear_float">
+                  <key frame="1" value="-0.08" />
+                  <key frame="6" value="-0.08" />
+                  <key frame="7" value="0" />
+                  <key frame="25" value="0" />
+                  <key frame="26" value="-0.08" />
+                  <key frame="36" value="-0.08" />
+                  <key frame="37" value="0" />
+                  <key frame="40" value="0" />
+                  <key frame="41" value="-0.08" />
+                  <key frame="46" value="-0.08" />
+                  <key frame="47" value="0" />
+                  <key frame="50" value="0" />
+                  <key frame="51" value="-0.08" />
+                  <key frame="56" value="-0.08" />
+                  <key frame="57" value="0" />
+                  <key frame="60" value="0" />
+                  <key frame="61" value="-0.08" />
+                  <key frame="100" value="-0.08" />
+                </uv_property>
+                <uv_property name="v_offset" controller="linear_float">
+                  <key frame="1" value="0" />
+                  <key frame="6" value="0" />
+                  <key frame="7" value="0" />
+                  <key frame="25" value="0" />
+                  <key frame="26" value="0" />
+                  <key frame="36" value="0" />
+                  <key frame="37" value="0" />
+                  <key frame="40" value="0" />
+                  <key frame="41" value="0" />
+                  <key frame="46" value="0" />
+                  <key frame="47" value="0" />
+                  <key frame="50" value="0" />
+                  <key frame="51" value="0" />
+                  <key frame="56" value="0" />
+                  <key frame="57" value="0" />
+                  <key frame="60" value="0" />
+                  <key frame="61" value="0" />
+                  <key frame="100" value="0" />
+                </uv_property>
+              </uv_animation>
+            </uv_animations>
+          </part>
+        </parts>
+      </connection>
+      <connection name="ConnectionForanim_lights_main" tags="animation detail_s forceoutline nocollision part textureanimation ">
+        <animations>
+          <animation name="loop" start="1" end="100" />
+        </animations>
+        <parts>
+          <part name="anim_lights_main">
+            <lods>
+              <lod index="0">
+                <materials>
+                  <material id="1" ref="p2fx.fx_p2_gradientcolour_01" />
+                </materials>
+              </lod>
+            </lods>
+            <size>
+              <max x="309.3959" y="256.0936" z="763.4841" />
+              <center x="0" y="0" z="32.10577" />
+            </size>
+            <uv_animations>
+              <uv_animation rotaroundcenter="1" mapchannel="1">
+                <uv_property name="u_offset" controller="linear_float">
+                  <key frame="1" value="-0.08" />
+                  <key frame="10" value="-0.08" />
+                  <key frame="11" value="0" />
+                  <key frame="29" value="0" />
+                  <key frame="30" value="-0.08" />
+                  <key frame="40" value="-0.08" />
+                  <key frame="41" value="0" />
+                  <key frame="44" value="0" />
+                  <key frame="45" value="-0.08" />
+                  <key frame="50" value="-0.08" />
+                  <key frame="51" value="0" />
+                  <key frame="54" value="0" />
+                  <key frame="55" value="-0.08" />
+                  <key frame="60" value="-0.08" />
+                  <key frame="61" value="0" />
+                  <key frame="64" value="0" />
+                  <key frame="65" value="-0.08" />
+                  <key frame="100" value="-0.08" />
+                </uv_property>
+                <uv_property name="v_offset" controller="linear_float">
+                  <key frame="1" value="0" />
+                  <key frame="10" value="0" />
+                  <key frame="11" value="0" />
+                  <key frame="29" value="0" />
+                  <key frame="30" value="0" />
+                  <key frame="40" value="0" />
+                  <key frame="41" value="0" />
+                  <key frame="44" value="0" />
+                  <key frame="45" value="0" />
+                  <key frame="50" value="0" />
+                  <key frame="51" value="0" />
+                  <key frame="54" value="0" />
+                  <key frame="55" value="0" />
+                  <key frame="60" value="0" />
+                  <key frame="61" value="0" />
+                  <key frame="64" value="0" />
+                  <key frame="65" value="0" />
+                  <key frame="100" value="0" />
+                </uv_property>
+              </uv_animation>
+            </uv_animations>
+          </part>
+        </parts>
+      </connection>
+      <connection name="con_weapon_xl_01" tags="combat extralarge mandatory ship_kha_xl_battleship_01 weapon ">
+        <offset>
+          <position x="0" y="1.722151" z="761.52" />
+        </offset>
+      </connection>
+    </connections>
+    <properties>
+      <physics mass="1">
+        <drag forward="1" reverse="1" />
+      </physics>
+    </properties>
+  </component>
+</components>

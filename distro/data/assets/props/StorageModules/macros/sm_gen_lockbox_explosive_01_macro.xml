@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Markus (192.168.3.139) at 16.10.2018_09-51-51-->
+<macros>
+  <macro name="sm_gen_lockbox_explosive_01_macro" class="lockbox">
+    <component ref="sm_gen_lockbox_explosive_01" />
+    <properties>
+      <identification name="{20109,4001}" />
+      <explosiondamage hull="10000" shield="10000" />
+      <hull max="15" />
+      <effects>
+        <explosion ref="explosion_lockbox_explosive_01" />
+        <longrangescan ref="scfx_result_neutral_01" />
+      </effects>
+      <drop ref="hidden_rare_lockbox" />
+      <longrangescan minlevel="3" />
+    </properties>
+    <connections>
+      <connection ref="ConnectionFor_sm_gen_lock_rare_01_macro">
+        <macro ref="sm_gen_lock_rare_01_macro" connection="position" />
+      </connection>
+      <connection ref="ConnectionFor_sm_gen_lock_rare_01_macro1">
+        <macro ref="sm_gen_lock_rare_01_macro" connection="position" />
+      </connection>
+      <connection ref="ConnectionFor_sm_gen_lock_rare_01_macro2">
+        <macro ref="sm_gen_lock_rare_01_macro" connection="position" />
+      </connection>
+      <connection ref="ConnectionFor_sm_gen_lock_rare_01_macro3">
+        <macro ref="sm_gen_lock_rare_01_macro" connection="position" />
+      </connection>
+    </connections>
+  </macro>
+</macros>

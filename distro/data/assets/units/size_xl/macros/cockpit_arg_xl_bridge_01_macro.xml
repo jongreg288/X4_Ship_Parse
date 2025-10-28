@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Lino (192.168.3.148) at 30.05.2017_10-06-46-->
+<macros>
+  <macro name="cockpit_arg_xl_bridge_01_macro" class="cockpit">
+    <component ref="cockpit_arg_xl_bridge_01" />
+    <properties>
+      <identification unique="0" />
+    </properties>
+  </macro>
+</macros>

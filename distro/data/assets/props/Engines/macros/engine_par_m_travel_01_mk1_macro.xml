@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: aj (192.168.3.66) on 2025-01-08 14:36:49-->
+<macros>
+  <macro name="engine_par_m_travel_01_mk1_macro" class="engine">
+    <component ref="engine_par_m_travel_01_mk1" />
+    <properties>
+      <identification name="{20107,2414}" basename="{20107,2411}" shortname="{20107,2415}" makerrace="paranid" description="{20107,2412}" mk="1" />
+      <boost duration="12.45" recharge="136" thrust="4.2" acceleration="3.51" attack="0.25" release="3" coast="1.25" />
+      <travel charge="4" thrust="15.51" attack="34.2" release="30" />
+      <thrust forward="919.6" reverse="919.6" />
+      <hull integrated="1" />
+      <effects>
+        <boosting ref="arg_boost_fx_m" />
+        <traveling ref="gen_traveldrive_fx_m" />
+      </effects>
+      <sounds>
+        <enginedetail ref="enginedetail_ship_m_01" />
+      </sounds>
+      <decelerationcurve>
+        <point position="1.01" value="1" />
+        <point position="1.2" value="4" />
+        <point position="1.6" value="6" />
+        <point position="2.1" value="9" />
+        <point position="2.5" value="12" />
+      </decelerationcurve>
+      <strafecurve>
+        <point position="1.01" value="1" />
+        <point position="1.2" value="4" />
+        <point position="1.6" value="6" />
+        <point position="2.1" value="9" />
+        <point position="2.5" value="12" />
+      </strafecurve>
+    </properties>
+  </macro>
+</macros>

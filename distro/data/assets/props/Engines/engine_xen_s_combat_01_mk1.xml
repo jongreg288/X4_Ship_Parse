@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<components>
+	<component name="engine_xen_s_combat_01_mk1" class="engine">
+		<source geometry="assets\props\Engines\engine_xen_s_combat_01_mk1_data"/>
+		<layers>
+			<layer>
+				<waypoints/>
+				<lights/>
+			</layer>
+		</layers>
+		<connections>
+			<connection name="container" tags="contents" value="0"/>
+			<connection name="position" tags="position" value="1"/>
+			<connection name="Connection01" tags="fx nocollision part detail_l animation textureanimation speedscale_forward useobjectrotation ">
+				<offset/>
+				<restrictions>
+					<restriction type="rotation_x">
+						<limits>
+							<min value="-15"/>
+							<max value="15"/>
+						</limits>
+					</restriction>
+				</restrictions>
+				<animations>
+					<animation name="loop" start="1" end="10"/>
+				</animations>
+				<parts>
+					<part name="anim_flame01">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="enginefxp1.engine_fx_arg_gas"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="2.385993" y="0.7329388" z="8.207954"/>
+							<center x="2.598763E-05" y="-9.50098E-05" z="-7.86824"/>
+						</size>
+						<size_raw>
+							<max x="2.385993" y="0.7329388" z="8.207954"/>
+							<center x="2.598763E-05" y="-9.498E-05" z="-7.86824"/>
+						</size_raw>
+						<uv_animations>
+							<uv_animation mapchannel="1">
+								<uv_property name="u_offset" controller="linear_float">
+									<key frame="0" value="0"/>
+									<key frame="10" value="3"/>
+								</uv_property>
+							</uv_animation>
+						</uv_animations>
+					</part>
+				</parts>
+			</connection>
+			<connection name="conn_engine01" tags="engine small component standard ">
+				<offset/>
+			</connection>
+			<connection name="conn_booster01" tags="booster ">
+				<offset>
+					<position x="0" y="0" z="-23.53223"/>
+				</offset>
+			</connection>
+			<connection name="speedscaleConnection01" tags="speeddependant ">
+				<offset>
+					<position x="0" y="0" z="-0.7952185"/>
+				</offset>
+				<parts/>
+			</connection>
+			<connection name="enginealign" tags="enginealign  standard ">
+				<offset>
+					<position x="1.329035E-03" y="0" z="-20.44909"/>
+					<quaternion qx="-1" qy="7.54979E-08" qz="-7.54979E-08" qw="5.699933E-15"/>
+				</offset>
+			</connection>
+		</connections>
+	</component>
+</components>

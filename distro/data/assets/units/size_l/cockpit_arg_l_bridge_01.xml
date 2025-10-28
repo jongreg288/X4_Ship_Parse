@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<components>
+	<component name="cockpit_arg_l_bridge_01" class="cockpit">
+		<source geometry="assets\units\size_l\\cockpit_arg_l_bridge_01_data"/>
+		<layers>
+			<layer>
+				<waypoints/>
+				<lights/>
+			</layer>
+		</layers>
+		<connections>
+			<connection name="container" tags="contents" value="0"/>
+			<connection name="position" tags="position" value="1"/>
+			<connection name="Connection03" tags="part animation ">
+				<offset>
+					<position x="1.831055E-06" y="0" z="0"/>
+				</offset>
+				<animations>
+					<animation name="cockpit_entered" start="30" end="30"/>
+					<animation name="cockpit_leaving" start="30" end="60"/>
+					<animation name="cockpit_left" start="60" end="60"/>
+					<animation name="cockpit_entering" start="1" end="30"/>
+				</animations>
+				<parts>
+					<part name="anim_main">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hullpattern"/>
+								</materials>
+							</lod>
+							<lod index="1">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hullpattern"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="6.486376" y="2.691961" z="7.242308"/>
+							<center x="7.629399E-08" y="0" z="0"/>
+						</size>
+						<size_raw>
+							<max x="6.486376" y="2.691961" z="7.242308"/>
+							<center x="7.629399E-08" y="0" z="0"/>
+						</size_raw>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection04" group="transporter_01 " tags="part transporter platformcollision forceoutline location_cockpit   ">
+				<offset>
+					<position x="-3.3911" y="-1.453011" z="-8.576696"/>
+				</offset>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.part_main" name="part_main"/>
+				</parts>
+				<waypoints/>
+			</connection>
+			<connection name="Connection05" tags="part nocollision forceoutline detail_m  " parent="part_main">
+				<offset>
+					<position x="5.760193E-04" y="5.153775E-02" z="3.353691E-02"/>
+				</offset>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.detail_m_decals" name="detail_m_decals"/>
+				</parts>
+			</connection>
+			<connection name="Connection06" group="transporter_01 " tags="part animation detail_l walk_exclude door trigger_nearby  ">
+				<offset>
+					<position x="-2.839279" y="-1.459855" z="-7.431555"/>
+				</offset>
+				<animations>
+					<animation name="deactivated" start="1" end="1"/>
+					<animation name="activating" start="1" end="15" startsound="1"/>
+					<animation name="active" start="15" end="15"/>
+					<animation name="deactivating" start="15" end="30"/>
+				</animations>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.anim_door_left" name="anim_door_left"/>
+				</parts>
+				<waypoints/>
+			</connection>
+			<connection name="Connection07" tags="part nocollision forceoutline detail_l  " parent="anim_door_left">
+				<offset>
+					<position x="-0.4329367" y="3.161669E-03" z="-8.512211E-02"/>
+				</offset>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.detail_m_decals_left" name="detail_m_decals_left"/>
+				</parts>
+			</connection>
+			<connection name="Connection08" tags="part nocollision forceoutline detail_l  " parent="anim_door_left">
+				<offset>
+					<position x="6.043816E-02" y="9.536743E-07" z="-2.48909E-04"/>
+				</offset>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.detail_m_light_left" name="detail_m_light_left"/>
+				</parts>
+			</connection>
+			<connection name="Connection09" group="transporter_01 " tags="part animation detail_l walk_exclude door trigger_nearby  ">
+				<offset>
+					<position x="-3.933336" y="-1.460247" z="-7.431555"/>
+				</offset>
+				<animations>
+					<animation name="deactivated" start="1" end="1"/>
+					<animation name="activating" start="1" end="15"/>
+					<animation name="active" start="15" end="15"/>
+					<animation name="deactivating" start="15" end="30" startsound="1"/>
+				</animations>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.anim_door_right" name="anim_door_right"/>
+				</parts>
+				<waypoints/>
+			</connection>
+			<connection name="Connection10" tags="part nocollision forceoutline detail_l  " parent="anim_door_right">
+				<offset>
+					<position x="0.4321222" y="3.553152E-03" z="-8.512259E-02"/>
+				</offset>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.detail_m_decals_right" name="detail_m_decals_right"/>
+				</parts>
+			</connection>
+			<connection name="Connection11" tags="part nocollision forceoutline detail_l   " parent="anim_door_right">
+				<offset>
+					<position x="-6.110048E-02" y="3.926754E-04" z="-2.484322E-04"/>
+				</offset>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.detail_m_light_right" name="detail_m_light_right"/>
+				</parts>
+			</connection>
+			<connection name="Connection12" group="transporter_01 " tags="part animation platformcollision detail_l forceoutline trigger_interact ui  ">
+				<offset>
+					<position x="-2.177807" y="-1.426601" z="-8.667784"/>
+					<quaternion qx="-0" qy="0.7071068" qz="-0" qw="-0.7071067"/>
+				</offset>
+				<animations>
+					<animation name="deactivated" start="0" end="0"/>
+					<animation name="activating" start="0" end="50" startsound="1"/>
+					<animation name="active" start="50" end="50"/>
+					<animation name="deactivating" start="50" end="100" startsound="1"/>
+				</animations>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.detail_l_button" name="detail_l_button"/>
+				</parts>
+			</connection>
+			<connection name="Connection13" hidden="true" group="transporter_01 " tags="part animation detail_xl nocollision  ">
+				<offset>
+					<position x="-3.384826" y="-0.3174605" z="-7.686571"/>
+					<quaternion qx="0.7057381" qy="-0" qz="-0" qw="-0.7084727"/>
+				</offset>
+				<animations>
+					<animation name="deactivated" start="0" end="0"/>
+					<animation name="activating" start="0" end="75" startsound="1"/>
+					<animation name="active" start="75" end="75"/>
+					<animation name="deactivating" start="75" end="75"/>
+				</animations>
+				<parts>
+					<part ref="interiors_arg_airlock_01_body.dummy_sound_animation" name="dummy_sound_animation"/>
+				</parts>
+			</connection>
+			<connection name="Connection01" tags="pilot npc ">
+				<offset>
+					<position x="0" y="-1.514414" z="0.1013904"/>
+				</offset>
+			</connection>
+			<connection name="con_betty01" value="-1" tags="computer ">
+				<offset>
+					<position x="2.747774E-02" y="1.62105" z="-1.92392"/>
+					<quaternion qx="-2.469312E-08" qy="1" qz="8.231041E-09" qw="-8.128151E-08"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_l" tags="impactindicator">
+				<offset>
+					<position x="-5.975297" y="-0.8940926" z="7.195435"/>
+					<quaternion qx="-0" qy="-0" qz="0.7071066" qw="-0.7071069"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_r" tags="impactindicator">
+				<offset>
+					<position x="5.431685" y="-0.8940926" z="7.195435"/>
+					<quaternion qx="-0" qy="-0" qz="-0.7071068" qw="-0.7071067"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_t" tags="impactindicator">
+				<offset>
+					<position x="0.2605897" y="3.093915" z="7.195435"/>
+					<quaternion qx="-0" qy="-0" qz="-1" qw="4.371139E-08"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_b" tags="impactindicator">
+				<offset>
+					<position x="0.2605896" y="-4.085158" z="7.195435"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_tr" tags="impactindicator">
+				<offset>
+					<position x="4.665106" y="1.998658" z="7.010376"/>
+					<quaternion qx="-0" qy="-0" qz="-0.8870111" qw="-0.461748"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_tl" tags="impactindicator">
+				<offset>
+					<position x="-4.52606" y="2.688296" z="7.195435"/>
+					<quaternion qx="-0" qy="-0" qz="-0.9063079" qw="0.4226181"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_bl" tags="impactindicator">
+				<offset>
+					<position x="-4.824264" y="-3.294536" z="7.195435"/>
+					<quaternion qx="-0" qy="-0" qz="0.5372996" qw="-0.8433914"/>
+				</offset>
+			</connection>
+			<connection name="con_damage_indi_br" tags="impactindicator">
+				<offset>
+					<position x="4.001078" y="-3.757709" z="7.195435"/>
+					<quaternion qx="-0" qy="-0" qz="-0.3826834" qw="-0.9238796"/>
+				</offset>
+			</connection>
+			<connection name="con_cockpit" tags="cockpit component">
+				<offset/>
+			</connection>
+			<connection name="con_player01" value="-1" tags="player">
+				<offset>
+					<position x="-3.578341E-02" y="-0.3244402" z="-0.185335"/>
+					<quaternion qx="0.5" qy="-0.5" qz="-0.5" qw="-0.5"/>
+				</offset>
+			</connection>
+			<connection name="Connection02" tags="commander ">
+				<offset>
+					<position x="0" y="-1.527946" z="-1.077718"/>
+				</offset>
+			</connection>
+		</connections>
+	</component>
+</components>

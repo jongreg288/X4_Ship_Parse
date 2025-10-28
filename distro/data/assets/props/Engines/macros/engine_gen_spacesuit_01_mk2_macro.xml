@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: aj (192.168.3.51) on 2024-11-22 12:15:50-->
+<macros>
+  <macro name="engine_gen_spacesuit_01_mk2_macro" class="engine">
+    <component ref="generic_engine_spacesuit" />
+    <properties>
+      <identification name="{20113,4011}" description="{20113,4012}" mk="2" />
+      <boost duration="3600" thrust="3" acceleration="1.8" release="0" coast="0" />
+      <thrust forward="0.75" reverse="0.5" strafe="0.7" pitch="0.5" yaw="0.5" roll="0.5" />
+      <hull integrated="1" />
+      <effects>
+        <boosting ref="arg_boost_fx_xs" />
+      </effects>
+      <sounds>
+        <enginedetail ref="enginedetail_spacesuit_01" />
+      </sounds>
+      <decelerationcurve>
+        <point position="1" value="1" />
+        <point position="1.25" value="2" />
+        <point position="1.75" value="4" />
+      </decelerationcurve>
+      <strafecurve>
+        <point position="1" value="1" />
+        <point position="1.25" value="2" />
+        <point position="1.75" value="4" />
+      </strafecurve>
+    </properties>
+  </macro>
+</macros>

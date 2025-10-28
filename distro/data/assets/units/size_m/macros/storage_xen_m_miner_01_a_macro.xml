@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: nick (192.168.3.65) on 2024-07-09 12:52:45-->
+<macros>
+  <macro name="storage_xen_m_miner_01_a_macro" class="storage">
+    <component ref="generic_storage" />
+    <properties>
+      <identification makerrace="xenon" />
+      <cargo max="9500" tags="container solid" />
+      <hull integrated="1" />
+    </properties>
+  </macro>
+</macros>

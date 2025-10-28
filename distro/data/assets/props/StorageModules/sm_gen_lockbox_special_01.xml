@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<components>
+	<component name="sm_gen_lockbox_special_01" class="lockbox">
+		<source geometry="assets\props\StorageModules\\sm_gen_lockbox_special_01_data"/>
+		<layers>
+			<layer>
+				<waypoints/>
+				<lights/>
+			</layer>
+		</layers>
+		<connections>
+			<connection name="container" tags="contents" value="0"/>
+			<connection name="position" tags="position" value="1"/>
+			<connection name="space" tags="lockbox">
+				<offset/>
+			</connection>
+			<connection name="Connection01" tags="part detail_xl  ">
+				<offset>
+					<position x="1.788139E-08" y="0" z="-5.32907E-16"/>
+				</offset>
+				<parts>
+					<part name="detail_l_main">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+									<material id="2" ref="generic.generic_p1_alphatexture"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="10.77307" y="11.42262" z="11.4493"/>
+							<center x="-1.788139E-08" y="0" z="0.6388431"/>
+						</size>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection02" tags="part  ">
+				<offset/>
+				<parts>
+					<part name="part_main" wreck="part_main_wreck">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+							<lod index="1">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+							<lod index="2">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+							<lod index="3">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="11.04086" y="11.04189" z="10.85828"/>
+							<center x="0" y="0" z="0.5967083"/>
+						</size>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection03" tags="part animation detail_xl nocollision forceoutline  ">
+				<offset>
+					<position x="0" y="-5.72205E-07" z="-9.8316"/>
+				</offset>
+				<animations>
+					<animation name="deactivated" start="0" end="0"/>
+					<animation name="activating" start="0" end="35" startsound="1"/>
+					<animation name="active" start="35" end="35"/>
+					<animation name="deactivating" start="35" end="35"/>
+				</animations>
+				<parts>
+					<part name="anim_door_02">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="3.182336" y="3.230678" z="0.8181772"/>
+							<center x="3.182336" y="9.53678E-08" z="0.1350746"/>
+						</size>
+						<size_raw>
+							<max x="1.577208" y="3.230678" z="0.3415449"/>
+							<center x="1.577208" y="9.53678E-08" z="-0.3415575"/>
+						</size_raw>
+						<sounds>
+							<sound name="XU SoundEmitter01" ref="anim_lockbox_01_open">
+								<offset>
+									<position x="0" y="1.90735E-06" z="-0.8839731"/>
+								</offset>
+							</sound>
+						</sounds>
+					</part>
+				</parts>
+				<waypoints/>
+			</connection>
+			<connection name="Connection04" tags="part animation iklink detail_xl nocollision forceoutline " parent="anim_door_02">
+				<offset>
+					<position x="0" y="3.410605E-13" z="-0.6820316"/>
+				</offset>
+				<animations/>
+				<parts>
+					<part name="anim_door_lock">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="3.459116" y="1.773895" z="0.8239293"/>
+							<center x="1.685222" y="-2.384184E-08" z="5.433273E-02"/>
+						</size>
+						<size_raw>
+							<max x="1.773895" y="1.773895" z="0.3141964"/>
+							<center x="0" y="-2.384184E-08" z="0"/>
+						</size_raw>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection05" tags="part animation detail_xl  nocollision forceoutline  ">
+				<offset>
+					<position x="0" y="-5.72205E-07" z="-9.8316"/>
+				</offset>
+				<animations>
+					<animation name="deactivated" start="0" end="0"/>
+					<animation name="activating" start="0" end="35"/>
+					<animation name="active" start="35" end="35"/>
+					<animation name="deactivating" start="35" end="35"/>
+				</animations>
+				<parts>
+					<part name="anim_door_01">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="3.099051" y="3.230678" z="0.8181772"/>
+							<center x="-3.099051" y="9.53678E-08" z="0.1350746"/>
+						</size>
+						<size_raw>
+							<max x="1.577208" y="3.230678" z="0.3415449"/>
+							<center x="-1.577208" y="9.53678E-08" z="-0.3415575"/>
+						</size_raw>
+					</part>
+				</parts>
+			</connection>
+			<connection name="con_droppos" tags="droppos ">
+				<offset>
+					<position x="0" y="0" z="-2.539946"/>
+					<quaternion qx="-1" qy="-0" qz="-0" qw="-5.205486E-07"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro" tags="lock">
+				<offset>
+					<position x="-2.416918" y="2.303236" z="-10.20657"/>
+					<quaternion qx="-1.790359E-07" qy="-4.391145E-07" qz="-0.3826834" qw="-0.9238796"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro1" tags="lock">
+				<offset>
+					<position x="-2.448498" y="-2.233157" z="-10.20657"/>
+					<quaternion qx="-4.405401E-07" qy="-1.824776E-07" qz="-0.9238796" qw="-0.3826832"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro2" tags="lock">
+				<offset>
+					<position x="2.460533" y="2.280694" z="-10.20657"/>
+					<quaternion qx="1.859195E-07" qy="-4.419656E-07" qz="0.3826837" qw="-0.9238794"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro3" tags="lock">
+				<offset>
+					<position x="2.485713" y="-2.219928" z="-10.20657"/>
+					<quaternion qx="-4.405401E-07" qy="1.824777E-07" qz="-0.9238795" qw="0.3826834"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro4" tags="lock">
+				<offset>
+					<position x="-10.20657" y="-3.337654" z="-8.038425E-02"/>
+					<quaternion qx="-0.7071064" qy="-5.338511E-08" qz="-0.7071072" qw="5.338505E-08"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro5" tags="lock">
+				<offset>
+					<position x="10.20657" y="-3.352555" z="-0.1271648"/>
+					<quaternion qx="-0.7071072" qy="-2.837899E-07" qz="0.7071063" qw="3.905597E-07"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro6" tags="lock">
+				<offset>
+					<position x="10.20657" y="3.327389" z="-0.1879399"/>
+					<quaternion qx="-6.531588E-14" qy="0.7071071" qz="1.067702E-07" qw="-0.7071065"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro7" tags="lock">
+				<offset>
+					<position x="-10.20657" y="3.310429" z="-0.1522698"/>
+					<quaternion qx="-0" qy="-0.7071064" qz="-0" qw="-0.7071072"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro8" tags="lock">
+				<offset>
+					<position x="0" y="5.527192" z="9.883853"/>
+					<quaternion qx="-2.003726E-08" qy="-0.976296" qz="0.2164396" qw="-4.391997E-07"/>
+				</offset>
+			</connection>
+			<connection name="ConnectionFor_sm_gen_lock_rare_01_macro9" tags="lock">
+				<offset>
+					<position x="0" y="-5.808066" z="9.752879"/>
+					<quaternion qx="-0.976296" qy="-5.816415E-07" qz="-4.205195E-07" qw="0.2164396"/>
+				</offset>
+			</connection>
+		</connections>
+	</component>
+</components>

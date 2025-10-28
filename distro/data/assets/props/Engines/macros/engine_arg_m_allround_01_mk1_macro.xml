@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Ketraar (192.168.3.63) on 2025-06-30 19:18:08-->
+<macros>
+  <macro name="engine_arg_m_allround_01_mk1_macro" class="engine">
+    <component ref="engine_arg_m_allround_01_mk1" />
+    <properties>
+      <identification name="{20107,2004}" basename="{20107,2001}" shortname="{20107,2005}" makerrace="argon" description="{20107,2002}" mk="1" />
+      <boost duration="12.5" recharge="92" thrust="7.38" acceleration="6.27" attack="0.25" release="5" coast="1.15" />
+      <travel charge="8" thrust="10.51" attack="41.8" release="20" />
+      <thrust forward="960" reverse="960" />
+      <hull integrated="1" />
+      <effects>
+        <boosting ref="arg_boost_fx_m" />
+        <traveling ref="gen_traveldrive_fx_m" />
+      </effects>
+      <sounds>
+        <enginedetail ref="enginedetail_ship_m_02" />
+      </sounds>
+      <decelerationcurve>
+        <point position="1.01" value="1" />
+        <point position="1.25" value="2.2" />
+        <point position="1.75" value="5" />
+        <point position="2.1" value="8" />
+        <point position="2.5" value="12" />
+      </decelerationcurve>
+      <strafecurve>
+        <point position="1.01" value="1" />
+        <point position="1.25" value="3" />
+        <point position="1.75" value="6" />
+        <point position="2.1" value="8" />
+        <point position="2.5" value="12" />
+      </strafecurve>
+    </properties>
+  </macro>
+</macros>

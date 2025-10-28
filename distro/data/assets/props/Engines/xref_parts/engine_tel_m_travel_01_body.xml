@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<components>
+	<component name="engine_tel_m_travel_01_body" referenceable="1" class="positional">
+		<source geometry="assets\props\Engines\xref_parts\engine_tel_m_travel_01_body_data"/>
+		<layers>
+			<layer>
+				<waypoints/>
+				<lights/>
+			</layer>
+		</layers>
+		<connections>
+			<connection name="container" tags="contents" value="0"/>
+			<connection name="position" tags="position" value="1"/>
+			<connection name="space" tags="part">
+				<offset/>
+			</connection>
+			<connection name="Connection01" tags="part platformcollision forceoutline  ">
+				<offset/>
+				<parts>
+					<part name="part_main" wreck="part_main_wreck">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+									<material id="2" ref="p1teladi.tel_engine_trim"/>
+								</materials>
+							</lod>
+							<lod index="1">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+									<material id="2" ref="p1teladi.tel_engine_trim"/>
+								</materials>
+							</lod>
+							<lod index="2">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+									<material id="2" ref="p1teladi.tel_engine_trim"/>
+								</materials>
+							</lod>
+							<lod index="3">
+								<materials>
+									<material id="1" ref="generic.generic_p1_hulltexture"/>
+									<material id="2" ref="p1teladi.tel_engine_trim"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="5.996706" y="4.372185" z="8.245159"/>
+							<center x="0" y="0" z="-8.245152"/>
+						</size>
+					</part>
+				</parts>
+			</connection>
+			<connection name="Connection02" tags="part detail_l nocollision forceoutline  ">
+				<offset>
+					<position x="0" y="0" z="-8.236029"/>
+				</offset>
+				<parts>
+					<part name="fx_decals">
+						<lods>
+							<lod index="0">
+								<materials>
+									<material id="1" ref="p1paint.paint_p1_decal_01"/>
+								</materials>
+							</lod>
+						</lods>
+						<size>
+							<max x="5.885352" y="4.377186" z="7.929499"/>
+							<center x="0" y="0" z="0"/>
+						</size>
+					</part>
+				</parts>
+			</connection>
+		</connections>
+	</component>
+</components>

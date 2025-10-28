@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: aj (192.168.3.66) on 2025-01-08 11:59:36-->
+<macros>
+  <macro name="engine_arg_m_combat_01_mk3_macro" class="engine">
+    <component ref="engine_arg_m_combat_01_mk3" />
+    <properties>
+      <identification name="{20107,2284}" basename="{20107,2281}" shortname="{20107,2285}" makerrace="argon" description="{20107,2282}" mk="3" />
+      <boost duration="15" recharge="82.8" thrust="7.9" acceleration="7.79" attack="0.25" release="5" coast="1.15" />
+      <travel charge="8" thrust="8.04" attack="44.3" release="10" />
+      <thrust forward="1464.48" reverse="1464.48" />
+      <hull integrated="1" />
+      <effects>
+        <boosting ref="arg_boost_fx_m" />
+        <traveling ref="gen_traveldrive_fx_m" />
+      </effects>
+      <sounds>
+        <enginedetail ref="enginedetail_ship_m_03" />
+      </sounds>
+      <decelerationcurve>
+        <point position="1.01" value="1" />
+        <point position="1.2" value="2.2" />
+        <point position="1.6" value="5" />
+        <point position="1.9" value="8" />
+        <point position="2.4" value="12" />
+        <point position="2.8" value="15" />
+      </decelerationcurve>
+      <strafecurve>
+        <point position="1.01" value="1" />
+        <point position="1.2" value="3" />
+        <point position="1.7" value="6" />
+        <point position="2" value="8" />
+        <point position="2.4" value="12" />
+        <point position="2.8" value="15" />
+      </strafecurve>
+    </properties>
+  </macro>
+</macros>

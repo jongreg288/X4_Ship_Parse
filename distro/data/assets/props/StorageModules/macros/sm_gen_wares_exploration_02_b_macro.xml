@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Markus (192.168.3.139) at 12.11.2018_16-14-27-->
+<macros>
+  <macro name="sm_gen_wares_exploration_02_b_macro" class="collectablewares">
+    <component ref="sm_gen_wares_exploration_02" />
+    <properties>
+      <identification name="{20109,101}" />
+      <hull max="256" />
+      <drop ref="exploration_drops" />
+      <map visible="0" />
+    </properties>
+  </macro>
+</macros>

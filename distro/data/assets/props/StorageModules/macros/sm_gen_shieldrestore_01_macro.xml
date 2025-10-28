@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Michael (192.168.3.81) at 15.06.2018_14-26-21-->
+<macros>
+  <macro name="sm_gen_shieldrestore_01_macro" class="collectableshieldrestore">
+    <component ref="sm_gen_shieldrestore_01" />
+    <properties>
+      <identification unique="0" />
+      <hull max="256" />
+    </properties>
+  </macro>
+</macros>

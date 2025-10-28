@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Matthias (192.168.3.137) at 18.03.2016_13-45-08-->
+<components>
+  <component name="generic_thruster_large" class="engine">
+    <connections>
+      <connection name="rendereffects" tags="rendereffect" value="0" optional="1" />
+      <connection name="ship" tags="component large thruster" optional="0" />
+    </connections>
+    <properties />
+  </component>
+</components>

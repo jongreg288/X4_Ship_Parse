@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Michael (192.168.3.81) at 06.06.2019_15-08-40-->
+<macros>
+  <macro name="storage_tel_m_miner_liquid_01_a_macro" class="storage">
+    <component ref="generic_storage" />
+    <properties>
+      <identification makerrace="teladi" />
+      <cargo max="10800" tags="liquid" />
+      <hull integrated="1" />
+    </properties>
+  </macro>
+</macros>
