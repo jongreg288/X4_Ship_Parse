@@ -551,7 +551,7 @@ class ShipStatsApp(QMainWindow):
             storage_cargo_max = ship_row.get('storage_cargo_max', 0)
             
             if travel_speed and travel_speed > 0 and storage_cargo_max > 0:
-                ratio = ((1000000 / storage_cargo_max) / (50000 / travel_speed))
+                ratio = ((1000000 / storage_cargo_max) * (50000 / travel_speed)) / 60  # Convert to minutes
                 display_name = ship_row.get('display_name', ship_row.get('macro_name', 'Unknown'))
                 macro_name = ship_row.get('macro_name', 'Unknown')
                 
