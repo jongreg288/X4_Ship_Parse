@@ -4,13 +4,13 @@ a = Analysis(
     ['../main.py'],
     pathex=[],
     binaries=[
-        ('../dist/XRCatTool.exe', '.'),
-        ('../dist/XRCatToolGUI.exe', '.'),
+        ('../distro/XRCatTool.exe', '.'),
+        ('../distro/XRCatToolGUI.exe', '.'),
     ],
     datas=[
         ('../src', 'src'),
         ('../README.md', '.'),
-        ('../dist/Readme.txt', '.'),
+        ('../distro/Readme.txt', '.'),
     ],
     hiddenimports=[
         'PyQt6.QtCore',

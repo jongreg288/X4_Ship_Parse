@@ -21,6 +21,23 @@ def main():
     # Initialize Qt Application first
     app = QApplication(sys.argv)
     
+    # Show disclaimer dialog
+    disclaimer = QMessageBox()
+    disclaimer.setWindowTitle("X4 Ship Parser - Disclaimer")
+    disclaimer.setIcon(QMessageBox.Icon.Information)
+    disclaimer.setText("X4 Ship Parser v0.1.1 Alpha")
+    disclaimer.setInformativeText(
+        "This is an unofficial, community-created tool for X4: Foundations.\n\n"
+        "• This software is not affiliated with, endorsed by, or connected to Egosoft GmbH.\n"
+        "• X4: Foundations and all related trademarks are property of Egosoft GmbH.\n"
+        "• This tool extracts and analyzes game data for informational purposes only.\n"
+        "• Use at your own risk. The developers are not responsible for any issues.\n\n"
+        "This project is open source and provided as-is under the MIT License.\n"
+        "Created by @jongreg288 with assistance from Claude AI."
+    )
+    disclaimer.setStandardButtons(QMessageBox.StandardButton.Ok)
+    disclaimer.exec()
+    
     # Check if data directory exists, if not try to set it up
     data_dir = Path("data")
     if not data_dir.exists() or not list(data_dir.glob("**/*.xml")):

@@ -16,7 +16,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 # Configuration
-CURRENT_VERSION = "0.1.1"
+CURRENT_VERSION = "0.1.3"
 GITHUB_REPO = "jongreg288/X4_Ship_Parse"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 MAIN_EXE_NAME = "X4_Ship_Parser.exe"

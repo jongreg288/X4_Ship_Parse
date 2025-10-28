@@ -8,7 +8,9 @@ A comprehensive Python application for parsing and analyzing X4: Foundations shi
 - **⚡ Smart Data Extraction**: Direct CAT/DAT file reading with XRCatTool integration
 - **🎨 Clean GUI Interface**: Windowed application without console windows
 - **📊 Advanced Ship Analysis**: Calculate travel speeds, compare ships and engines
-- **🔄 Flexible Updates**: Automatic or manual update options
+- **� Visual Comparisons**: Interactive charts showing cargo/speed rankings for top 5 ships
+- **🔄 Intelligent Filtering**: Cascading dropdowns that auto-filter engines by ship size
+- **�🔄 Flexible Updates**: Automatic or manual update options
 - **🎯 Intelligent Detection**: Auto-finds X4 installation and language preferences
 
 ## 📦 For End Users (Standalone Version)
@@ -16,8 +18,8 @@ A comprehensive Python application for parsing and analyzing X4: Foundations shi
 ### Quick Start
 1. **Download** from [Releases](https://github.com/jongreg288/X4_Ship_Parse/releases)
 2. **Choose your package**:
-   - **Full Package** (`X4_Ship_Parser.exe` + `X4_Updater.exe`) - 79 MB total
-   - **Standalone Package** (`X4_Ship_Parser.exe` only) - 64.6 MB
+   - **Full Package** (`X4_Ship_Parser.exe` + `X4_Updater.exe`) - 93 MB total
+   - **Standalone Package** (`X4_Ship_Parser.exe` only) - 78.5 MB
 3. **Run** `X4_Ship_Parser.exe`
 4. **Automatic setup** - detects X4 installation and language preferences
 
@@ -75,8 +77,15 @@ python launcher.py
 1. **Launch**: Run `python main.py` or `X4_Ship_Parser.exe`
 2. **Language**: Automatically detects your language or use Settings → Language
 3. **Ship Selection**: Choose from 4 categories (Fighters, Container, Solid, Liquid)
-4. **Engine Selection**: Pick compatible engines for comparison
-5. **Analysis**: View detailed travel speeds and specifications
+4. **Engine Selection**: Smart filtering shows only compatible engines for your ship's size class
+5. **Analysis**: View detailed travel speeds and cargo/speed ratios
+6. **Visual Comparison**: Interactive bar chart displays top 5 ships of same size with selected engine
+
+### New Features (v0.1.3)
+- **Smart Engine Filtering**: Engine dropdown automatically filters by ship size (S/M/L/XL)
+- **Visual Rankings**: Bar chart shows how your ship compares to top 5 similar ships
+- **Improved Engine Names**: Cleaner format showing faction, size, type, and variant
+- **Enhanced Tooltips**: More detailed information on hover
 
 ### Language Support
 - **Automatic Detection**: Reads X4 config, Steam settings, or system locale

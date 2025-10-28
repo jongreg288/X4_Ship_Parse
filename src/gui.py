@@ -6,9 +6,14 @@ from PyQt6.QtCore import QTimer
 from .logic import compute_travel_speed
 from .language_detector import language_detector
 from .data_parser import refresh_text_mappings, get_current_language_info
+import re
+import matplotlib
+matplotlib.use('QtAgg')  # Use Qt backend for matplotlib
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 # Version information (network-free main application)
-CURRENT_VERSION = "0.1.1"
+CURRENT_VERSION = "0.1.3"
 
 class ShipStatsApp(QMainWindow):
     def __init__(self, ships_df, engines_df):
@@ -49,6 +54,23 @@ class ShipStatsApp(QMainWindow):
         self.tab_widget.addTab(self.liquid_tab, "Liquid")
         
         main_layout.addWidget(self.tab_widget)
+        
+        # Add DLC disclaimer at the bottom in deep red
+        dlc_disclaimer = QLabel(
+            "DLC Ships are not yet supported, look for them to be added in future patches.\nThank you."
+        )
+        dlc_disclaimer.setStyleSheet(
+            "color: #8B0000; "  # Deep red color
+            "font-weight: bold; "
+            "font-size: 11pt; "
+            "padding: 10px; "
+            "text-align: center;"
+        )
+        dlc_disclaimer.setWordWrap(True)
+        from PyQt6.QtCore import Qt
+        dlc_disclaimer.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(dlc_disclaimer)
+        
         central_widget.setLayout(main_layout)
     
     def create_menu_bar(self):
@@ -162,6 +184,158 @@ class ShipStatsApp(QMainWindow):
             """
         )
 
+    def extract_size_class(self, name):
+        """Extract size class from ship or engine macro name.
+        Examples: 
+        - engine_arg_l_allround_01_mk1 -> 'l'
+        - ship_arg_m_fighter_01_a -> 'm'
+        - engine_tel_xl_allround_01_mk1 -> 'xl'
+        """
+        if not name:
+            return None
+        
+        name_lower = str(name).lower()
+        
+        # Look for size pattern: _{size}_ where size is s, m, l, or xl
+        # Pattern matches _s_, _m_, _l_, or _xl_ in the name
+        match = re.search(r'_(xl|[sml])_', name_lower)
+        if match:
+            return match.group(1)
+        
+        return None
+    
+    def format_engine_name(self, macro_name):
+        """
+        Format engine macro name as: {faction} {size} {type} {variant}
+        Example: engine_arg_l_allround_01_mk3_macro -> ARG L Allround Mk3
+        """
+        if not macro_name:
+            return macro_name
+        
+        # Remove 'engine_' prefix and '_macro' suffix if present
+        name = macro_name.lower()
+        if name.startswith('engine_'):
+            name = name[7:]  # Remove 'engine_'
+        if name.endswith('_macro'):
+            name = name[:-6]  # Remove '_macro'
+        
+        # Split by underscore
+        parts = name.split('_')
+        
+        if len(parts) < 4:
+            # Not enough parts, return original
+            return macro_name
+        
+        # Expected format: faction_size_type_number_variant
+        # Example: arg_l_allround_01_mk3
+        faction = parts[0].upper()
+        size = parts[1].upper()
+        
+        # Find where the variant starts (usually mk1, mk2, mk3, or similar)
+        # Type can be multiple words before the variant
+        type_parts = []
+        variant_parts = []
+        found_variant = False
+        
+        for i in range(2, len(parts)):
+            part = parts[i]
+            # Check if this looks like a variant (mk1, mk2, etc.) or number
+            if part.startswith('mk') or part.isdigit():
+                found_variant = True
+            
+            if found_variant:
+                variant_parts.append(part)
+            else:
+                type_parts.append(part)
+        
+        # Capitalize type parts
+        engine_type = ' '.join(word.capitalize() for word in type_parts if not word.isdigit())
+        variant = ' '.join(part.upper() if part.startswith('mk') else part for part in variant_parts)
+        
+        # Build final name
+        result_parts = [faction, size]
+        if engine_type:
+            result_parts.append(engine_type)
+        if variant:
+            result_parts.append(variant)
+        
+        return ' '.join(result_parts)
+    
+    def filter_engines_by_ship(self, tab_data):
+        """Filter engine dropdown based on selected ship's size class."""
+        ship_dropdown = tab_data['ship_dropdown']
+        engine_dropdown = tab_data['engine_dropdown']
+        ship_name_mapping = tab_data['ship_name_mapping']
+        all_engine_items = tab_data.get('all_engine_items', [])
+        all_engine_mapping = tab_data.get('all_engine_mapping', {})
+        
+        # Safety check: if we don't have the full engine data, don't filter
+        if not all_engine_items or not all_engine_mapping:
+            return
+        
+        ship_name = ship_dropdown.currentText()
+        
+        # If "None" is selected or empty, show all engines
+        if not ship_name or ship_name == "None":
+            engine_dropdown.blockSignals(True)  # Prevent recursive updates
+            current_engine = engine_dropdown.currentText()
+            engine_dropdown.clear()
+            engine_dropdown.addItems(all_engine_items)
+            # Try to restore previous selection
+            index = engine_dropdown.findText(current_engine)
+            if index >= 0:
+                engine_dropdown.setCurrentIndex(index)
+            engine_dropdown.blockSignals(False)
+            return
+        
+        # Get ship's size class
+        macro_name = ship_name_mapping.get(ship_name, ship_name)
+        ship_size = self.extract_size_class(macro_name)
+        
+        if not ship_size:
+            # Can't determine size, show all engines
+            engine_dropdown.blockSignals(True)
+            current_engine = engine_dropdown.currentText()
+            engine_dropdown.clear()
+            engine_dropdown.addItems(all_engine_items)
+            index = engine_dropdown.findText(current_engine)
+            if index >= 0:
+                engine_dropdown.setCurrentIndex(index)
+            engine_dropdown.blockSignals(False)
+            return
+        
+        # Filter engines to matching size
+        filtered_engine_items = ["None"]
+        for engine_name in all_engine_items[1:]:  # Skip the first "None"
+            engine_macro = all_engine_mapping.get(engine_name, engine_name)
+            engine_size = self.extract_size_class(engine_macro)
+            
+            if engine_size == ship_size:
+                filtered_engine_items.append(engine_name)
+        
+        # Update engine dropdown
+        engine_dropdown.blockSignals(True)  # Prevent recursive updates
+        current_engine = engine_dropdown.currentText()
+        engine_dropdown.clear()
+        engine_dropdown.addItems(filtered_engine_items)
+        
+        # Try to restore previous selection if it's still in the filtered list
+        index = engine_dropdown.findText(current_engine)
+        if index >= 0:
+            engine_dropdown.setCurrentIndex(index)
+        else:
+            engine_dropdown.setCurrentIndex(0)  # Reset to "None"
+        
+        engine_dropdown.blockSignals(False)
+    
+    def filter_ships_by_engine(self, tab_data):
+        """Filter ship dropdown based on selected engine's size class."""
+        # Note: Ships are already filtered by cargo type, so we're not implementing
+        # ship filtering by engine size as it would require re-filtering the base list.
+        # The main use case is filtering engines by ship, which is more intuitive.
+        # This method is a placeholder for future enhancement if needed.
+        pass
+    
     def create_ship_tab(self, cargo_filter, tab_name):
         """Create a tab with ship selection and stats for a specific cargo type."""
         tab_widget = QWidget()
@@ -232,8 +406,13 @@ class ShipStatsApp(QMainWindow):
                 
             display_name = row.get('display_name', macro_name)
             
-            # Use display name if available and different from macro, otherwise use macro name
-            if display_name and display_name != macro_name and not display_name.startswith("Text Ref:"):
+            # Format engine name as: faction size type variant
+            formatted_name = self.format_engine_name(macro_name)
+            
+            # Use formatted name if we successfully parsed it, otherwise fall back to display name or macro
+            if formatted_name and formatted_name != macro_name:
+                clean_name = formatted_name
+            elif display_name and display_name != macro_name and not display_name.startswith("Text Ref:"):
                 clean_name = display_name
             else:
                 clean_name = macro_name
@@ -256,28 +435,169 @@ class ShipStatsApp(QMainWindow):
             'ship_name_mapping': ship_name_mapping,
             'engine_name_mapping': engine_name_mapping,
             'filtered_ships': filtered_ships,
-            'cargo_filter': cargo_filter
+            'cargo_filter': cargo_filter,
+            'all_engines': self.engines_df.copy(),  # Store all engines for filtering
+            'all_engine_items': list(engine_items),  # Store all engine display names (make explicit copy)
+            'all_engine_mapping': dict(engine_name_mapping)  # Store all engine mappings (make explicit copy)
         }
         
-        # Connect signals
+        # Connect signals for cascading filters (connect AFTER initial setup to avoid premature filtering)
+        ship_dropdown.currentIndexChanged.connect(lambda: self.filter_engines_by_ship(tab_data))
+        engine_dropdown.currentIndexChanged.connect(lambda: self.filter_ships_by_engine(tab_data))
+        
+        # Connect signals for stats updates
         ship_dropdown.currentIndexChanged.connect(lambda: self.update_tab_stats(tab_data))
         ship_dropdown.currentIndexChanged.connect(lambda: self.update_tab_ship_tooltip(tab_data))
         engine_dropdown.currentIndexChanged.connect(lambda: self.update_tab_stats(tab_data))
         engine_dropdown.currentIndexChanged.connect(lambda: self.update_tab_engine_tooltip(tab_data))
+        
+        # Connect signals for chart updates
+        ship_dropdown.currentIndexChanged.connect(lambda: self.update_comparison_chart(tab_data))
+        engine_dropdown.currentIndexChanged.connect(lambda: self.update_comparison_chart(tab_data))
         
         # Create form layout
         form = QFormLayout()
         form.addRow("Ship:", ship_dropdown)
         form.addRow("Engine:", engine_dropdown)
         
+        # Create matplotlib chart for comparison
+        chart_canvas = self.create_comparison_chart()
+        
         layout.addLayout(form)
         layout.addWidget(stats_label)
+        layout.addWidget(QLabel("<b>Cargo/Speed Comparison (Top 5 Ships)</b>"))
+        layout.addWidget(chart_canvas)
         tab_widget.setLayout(layout)
+        
+        # Store chart canvas in tab_data for updates
+        tab_data['chart_canvas'] = chart_canvas
         
         # Store tab data as attribute
         setattr(self, f'{cargo_filter}_tab_data', tab_data)
         
         return tab_widget
+
+    def create_comparison_chart(self):
+        """Create a matplotlib chart widget for ship comparison."""
+        figure = Figure(figsize=(8, 4))
+        canvas = FigureCanvas(figure)
+        canvas.setMinimumHeight(300)
+        return canvas
+    
+    def update_comparison_chart(self, tab_data):
+        """Update the comparison chart with top 5 ships of same size using same engine."""
+        chart_canvas = tab_data.get('chart_canvas')
+        if not chart_canvas:
+            return
+        
+        ship_dropdown = tab_data['ship_dropdown']
+        engine_dropdown = tab_data['engine_dropdown']
+        ship_name_mapping = tab_data['ship_name_mapping']
+        engine_name_mapping = tab_data['engine_name_mapping']
+        filtered_ships = tab_data['filtered_ships']
+        
+        ship_name = ship_dropdown.currentText()
+        engine_name = engine_dropdown.currentText()
+        
+        # Clear the figure
+        figure = chart_canvas.figure
+        figure.clear()
+        
+        # If no valid selection, show empty chart
+        if not ship_name or ship_name == "None" or not engine_name or engine_name == "None":
+            ax = figure.add_subplot(111)
+            ax.text(0.5, 0.5, 'Select a ship and engine to view comparison', 
+                   ha='center', va='center', fontsize=12)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            chart_canvas.draw()
+            return
+        
+        # Get the selected ship's size class
+        ship_macro = ship_name_mapping.get(ship_name, ship_name)
+        ship_size = self.extract_size_class(ship_macro)
+        
+        if not ship_size:
+            ax = figure.add_subplot(111)
+            ax.text(0.5, 0.5, 'Unable to determine ship size', 
+                   ha='center', va='center', fontsize=12)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            chart_canvas.draw()
+            return
+        
+        # Get the selected engine macro
+        engine_macro = engine_name_mapping.get(engine_name, engine_name)
+        
+        # Find all ships of the same size in this tab's filtered ships
+        same_size_ships = []
+        for _, row in filtered_ships.iterrows():
+            macro_name = row.get('macro_name', '')
+            row_size = self.extract_size_class(macro_name)
+            if row_size == ship_size:
+                same_size_ships.append(row)
+        
+        # Calculate cargo/speed ratio for each ship with the selected engine
+        ship_ratios = []
+        for ship_row in same_size_ships:
+            # Get engine data
+            engine_row = self.engines_df[self.engines_df['name'] == engine_macro]
+            if engine_row.empty:
+                continue
+            engine_row = engine_row.iloc[0]
+            
+            # Calculate travel speed
+            travel_speed = compute_travel_speed(ship_row, engine_row)
+            storage_cargo_max = ship_row.get('storage_cargo_max', 0)
+            
+            if travel_speed and travel_speed > 0 and storage_cargo_max > 0:
+                ratio = storage_cargo_max / travel_speed
+                display_name = ship_row.get('display_name', ship_row.get('macro_name', 'Unknown'))
+                macro_name = ship_row.get('macro_name', 'Unknown')
+                
+                # Use display name if valid
+                if display_name and display_name != macro_name and not display_name.startswith("Text Ref:"):
+                    label = display_name
+                else:
+                    label = macro_name
+                
+                ship_ratios.append({
+                    'name': label,
+                    'ratio': ratio,
+                    'is_selected': (ship_row.get('macro_name') == ship_macro)
+                })
+        
+        # Sort by ratio (descending) and take top 5
+        ship_ratios.sort(key=lambda x: x['ratio'], reverse=True)
+        top_ships = ship_ratios[:5]
+        
+        if not top_ships:
+            ax = figure.add_subplot(111)
+            ax.text(0.5, 0.5, 'No comparable ships found', 
+                   ha='center', va='center', fontsize=12)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            chart_canvas.draw()
+            return
+        
+        # Create bar chart
+        ax = figure.add_subplot(111)
+        names = [s['name'][:30] + '...' if len(s['name']) > 30 else s['name'] for s in top_ships]
+        ratios = [s['ratio'] for s in top_ships]
+        colors = ['#4CAF50' if s['is_selected'] else '#2196F3' for s in top_ships]
+        
+        bars = ax.barh(names, ratios, color=colors)
+        ax.set_xlabel('Cargo/Speed Ratio', fontsize=10)
+        ax.set_title(f'Top 5 {ship_size.upper()}-Size Ships with {engine_name}', fontsize=11)
+        ax.grid(axis='x', alpha=0.3)
+        
+        # Add value labels on bars
+        for i, (bar, ratio) in enumerate(zip(bars, ratios)):
+            ax.text(ratio, bar.get_y() + bar.get_height()/2, 
+                   f' {ratio:.2f}', va='center', fontsize=9)
+        
+        figure.tight_layout()
+        chart_canvas.draw()
 
     def update_tab_stats(self, tab_data):
         ship_dropdown = tab_data['ship_dropdown']

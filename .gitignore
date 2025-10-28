@@ -182,13 +182,14 @@ data/
 
 # Build Artifacts
 build/
-dist/*.exe
-dist/*.dll
-dist/data/
-# Keep user documentation and tools in dist/
-!dist/README_USERS.txt
-!dist/Readme.txt
-!dist/XRCatTool*.exe
+dist/  # Temporary PyInstaller output (gets copied to distro/)
+distro/*.exe
+distro/*.dll
+distro/data/
+# Keep user documentation and tools in distro/
+!distro/README_USERS.txt
+!distro/Readme.txt
+!distro/XRCatTool*.exe
 
 # Temporary and Debug Files  
 debug_*.py

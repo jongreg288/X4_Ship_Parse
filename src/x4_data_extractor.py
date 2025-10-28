@@ -193,7 +193,7 @@ class X4DataExtractor:
         """
         if not self.x4_install_path:
             safe_print("❌ X4 installation path not found")
-            return None
+            return False
             
         safe_print("🔄 Extracting XML files from X4 game data...")
         
@@ -273,28 +273,28 @@ class X4DataExtractor:
                 
             cmd.extend([
                 "-out", str(self.data_dir.absolute()),
-                # Only extract files we actually need:
-                # 1. Engine XML files (for engine stats)
-                "-include", r"^assets/props/Engines/macros/.*\.xml$",
-                # 2. Ship XML files only (not all units)
-                "-include", r"^assets/units/size_.*/macros/ship_.*\.xml$",
-                # 3. Storage module XML files (for cargo calculations)
-                "-include", r"^assets/props/StorageModules/.*\.xml$"
+                # Extract all necessary files:
+                # 1. All translation files in \data\t
+                "-include", r"^t/.*$",
+                # 2. Index files (components.xml, macros.xml)
+                "-include", r"^index/.*\.xml$",
+                # 3. All files in size_l, size_m, size_s, size_xl directories (excluding size_xs)
+                "-include", r"^assets/units/size_l/.*$",
+                "-include", r"^assets/units/size_m/.*$",
+                "-include", r"^assets/units/size_s/.*$",
+                "-include", r"^assets/units/size_xl/.*$",
+                # 4. All engine files
+                "-include", r"^assets/props/Engines/.*$",
+                # 5. All storage module files
+                "-include", r"^assets/props/StorageModules/.*$"
             ])
             
-            # 4. Add language file based on detection
-            # Detect appropriate language and add its text file
+            # Detect language for logging purposes
             detected_lang_id = language_detector.get_language_id(Path(self.x4_install_path) if self.x4_install_path else None)
-            lang_file = language_detector.get_language_file_name(detected_lang_id)
             lang_name = language_detector.get_language_name(detected_lang_id)
             
             safe_print(f"🌍 Detected language: {lang_name} (ID: {detected_lang_id})")
-            safe_print(f"📝 Will extract language file: {lang_file}")
-            
-            cmd.extend([
-                # Extract the detected language file
-                "-include", f"^t/{lang_file.replace('.', r'\.')}$"
-            ])
+            safe_print(f"📝 Will extract all translation files from t/")
             
             safe_print("🚀 Starting extraction...")
             safe_print(f"Command: {' '.join(cmd)}")
@@ -310,32 +310,36 @@ class X4DataExtractor:
             safe_print("✅ XRCatTool extraction completed successfully")
             
             # Verify that we got the files we need
-            engines_dir = self.data_dir / "assets/props/Engines/macros"
-            ships_found = 0
-            
-            # Count ship XML files across all size directories
+            engines_dir = self.data_dir / "assets/props/Engines"
+            storage_dir = self.data_dir / "assets/props/StorageModules"
+            index_dir = self.data_dir / "index"
+            t_dir = self.data_dir / "t"
             units_dir = self.data_dir / "assets/units"
+            
+            # Count files
+            ships_found = 0
             if units_dir.exists():
                 for size_dir in units_dir.glob("size_*"):
-                    macros_dir = size_dir / "macros"
-                    if macros_dir.exists():
-                        ships_found += len(list(macros_dir.glob("ship_*.xml")))
+                    if size_dir.name == "size_xs":
+                        continue  # Skip size_xs as per requirements
+                    ships_found += len(list(size_dir.rglob("*.xml")))
             
-            engine_count = 0
-            if engines_dir.exists():
-                engine_count = len(list(engines_dir.glob("*.xml")))
+            engine_count = len(list(engines_dir.rglob("*.xml"))) if engines_dir.exists() else 0
+            storage_count = len(list(storage_dir.rglob("*.xml"))) if storage_dir.exists() else 0
+            index_count = len(list(index_dir.glob("*.xml"))) if index_dir.exists() else 0
+            translation_count = len(list(t_dir.glob("*.xml"))) if t_dir.exists() else 0
             
-            # Check storage modules
-            storage_dir = self.data_dir / "assets/props/StorageModules"
-            storage_count = 0
-            if storage_dir.exists():
-                storage_count = len(list(storage_dir.glob("**/*.xml")))
-            
-            if engine_count > 0 and ships_found > 0:
-                safe_print(f"📊 Extracted {engine_count} engines, {ships_found} ships, {storage_count} storage modules")
+            if engine_count > 0 and ships_found > 0 and index_count > 0:
+                safe_print(f"📊 Extracted:")
+                safe_print(f"   - {ships_found} ship files (size_l, size_m, size_s, size_xl)")
+                safe_print(f"   - {engine_count} engine files")
+                safe_print(f"   - {storage_count} storage module files")
+                safe_print(f"   - {index_count} index files")
+                safe_print(f"   - {translation_count} translation files")
                 return True
             else:
-                safe_print(f"⚠️ Insufficient files extracted: {engine_count} engines, {ships_found} ships")
+                safe_print(f"⚠️ Insufficient files extracted:")
+                safe_print(f"   - Ships: {ships_found}, Engines: {engine_count}, Index: {index_count}")
                 return False
                 
         except subprocess.CalledProcessError as e:
