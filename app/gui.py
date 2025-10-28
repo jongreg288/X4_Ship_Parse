@@ -1,49 +1,116 @@
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QFormLayout, QTabWidget
+    QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QFormLayout, QTabWidget,
+    QMainWindow, QMenuBar, QMessageBox
 )
+from PyQt6.QtCore import QTimer
 from .logic import compute_travel_speed
+from .updater import check_for_updates_with_ui
 
-class ShipStatsApp(QWidget):
+class ShipStatsApp(QMainWindow):
     def __init__(self, ships_df, engines_df):
         super().__init__()
         self.ships_df = ships_df
         self.engines_df = engines_df
         print(f"GUI received {len(self.ships_df)} ships.")
         self.init_ui()
+        
+        # Check for updates after a short delay (non-blocking)
+        QTimer.singleShot(2000, self.check_for_updates_silent)
 
     def init_ui(self):
         self.setWindowTitle("X4 Ship Stats Analyzer")
+        
+        # Create menu bar
+        self.create_menu_bar()
+        
+        # Create central widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        
         main_layout = QVBoxLayout()
 
         # Create tab widget
         self.tab_widget = QTabWidget()
         
         # Create 4 tabs
-        self.all_ships_tab = self.create_ship_tab("all", "All Ships")
-        self.container_tab = self.create_ship_tab("container", "Container Ships")
+        self.fighters_tab = self.create_ship_tab("fight", "Fighters")
+        self.container_tab = self.create_ship_tab("trade", "Container Ships")
         self.solid_tab = self.create_ship_tab("solid", "Solid Cargo Ships")
         self.liquid_tab = self.create_ship_tab("liquid", "Liquid Cargo Ships")
         
         # Add tabs to tab widget
-        self.tab_widget.addTab(self.all_ships_tab, "All Ships")
+        self.tab_widget.addTab(self.fighters_tab, "Fighters")
         self.tab_widget.addTab(self.container_tab, "Container")
         self.tab_widget.addTab(self.solid_tab, "Solid")
         self.tab_widget.addTab(self.liquid_tab, "Liquid")
         
         main_layout.addWidget(self.tab_widget)
-        self.setLayout(main_layout)
+        central_widget.setLayout(main_layout)
+    
+    def create_menu_bar(self):
+        """Create the menu bar with Help menu."""
+        menubar = self.menuBar()
+        if not menubar:
+            return
+        
+        # Help menu
+        help_menu = menubar.addMenu('Help')
+        if not help_menu:
+            return
+        
+        # Check for Updates action
+        update_action = help_menu.addAction('Check for Updates...')
+        if update_action:
+            update_action.triggered.connect(self.check_for_updates_manual)
+        
+        # About action
+        about_action = help_menu.addAction('About')
+        if about_action:
+            about_action.triggered.connect(self.show_about)
+    
+    def check_for_updates_silent(self):
+        """Check for updates silently (no dialog if no updates)."""
+        try:
+            check_for_updates_with_ui(self, silent=True)
+        except Exception:
+            # Ignore errors in silent update check
+            pass
+    
+    def check_for_updates_manual(self):
+        """Check for updates with user feedback."""
+        check_for_updates_with_ui(self, silent=False)
+    
+    def show_about(self):
+        """Show about dialog."""
+        from .updater import CURRENT_VERSION
+        
+        QMessageBox.about(
+            self,
+            "About X4 Ship Stats Analyzer",
+            f"""<h3>X4 Ship Stats Analyzer</h3>
+            <p><b>Version:</b> {CURRENT_VERSION}</p>
+            <p><b>Author:</b> @jongreg288</p>
+            <p>Made with the help of Claude, through Copilot.</p>
+            <p>A labor of desire to know which ship can carry the most and go the fastest.</p>
+            <p><b>GitHub:</b> <a href="https://github.com/jongreg288/X4_Ship_Parse">https://github.com/jongreg288/X4_Ship_Parse</a></p>
+            """
+        )
 
     def create_ship_tab(self, cargo_filter, tab_name):
         """Create a tab with ship selection and stats for a specific cargo type."""
         tab_widget = QWidget()
         layout = QVBoxLayout()
         
-        # Filter ships based on cargo type
-        if cargo_filter == "all":
-            filtered_ships = self.ships_df
-        elif cargo_filter == "container":
+        # Filter ships based on purpose or cargo type
+        if cargo_filter == "fight":
+            # Filter for ships with purpose primary="fight"
             filtered_ships = self.ships_df[
-                self.ships_df['storage_cargo_type'].str.contains('container', na=False, case=False)
+                self.ships_df['purpose_primary'] == 'fight'
+            ]
+        elif cargo_filter == "trade":
+            # Filter for ships with purpose primary="trade"
+            filtered_ships = self.ships_df[
+                self.ships_df['purpose_primary'] == 'trade'
             ]
         elif cargo_filter == "solid":
             filtered_ships = self.ships_df[
@@ -77,11 +144,39 @@ class ShipStatsApp(QWidget):
         ship_dropdown.addItems(ship_items)
         ship_dropdown.setToolTip(f"Select a {cargo_filter} ship to analyze.\nShows clean ship names from the game")
         
-        # Create engine dropdown
+        # Create engine dropdown (exclude XS engines)
         engine_dropdown = QComboBox()
-        engine_names = ["None"] + self.engines_df["name"].tolist()
-        engine_dropdown.addItems(engine_names)
-        engine_dropdown.setToolTip("Select an engine to pair with the ship.\nHigher travel thrust = faster travel speed")
+        engine_items = ["None"]
+        engine_name_mapping = {}
+        
+        for _, row in self.engines_df.iterrows():
+            macro_name = row.get('name', 'Unknown')
+            macro_lower = macro_name.lower()
+            
+            # Skip non-ship engines: XS, missiles, mines, drones, spacesuits, etc.
+            if (    '_xs_' in macro_lower or 
+                    'missile' in macro_lower or 
+                    'mine' in macro_lower or 
+                    'torpedo' in macro_lower or 
+                    'drone' in macro_lower or 
+                    'escapepod' in macro_lower or 
+                    'police' in macro_lower or
+                    'spacesuit' in macro_lower):
+                continue
+                
+            display_name = row.get('display_name', macro_name)
+            
+            # Use display name if available and different from macro, otherwise use macro name
+            if display_name and display_name != macro_name and not display_name.startswith("Text Ref:"):
+                clean_name = display_name
+            else:
+                clean_name = macro_name
+            
+            engine_items.append(clean_name)
+            engine_name_mapping[clean_name] = macro_name
+        
+        engine_dropdown.addItems(engine_items)
+        engine_dropdown.setToolTip("Select an engine to pair with the ship.\nShows ship engines only (missiles, mines, drones, spacesuits excluded)")
         
         # Create stats label
         stats_label = QLabel(f"Select a {cargo_filter} ship and engine to see stats.")
@@ -93,6 +188,7 @@ class ShipStatsApp(QWidget):
             'engine_dropdown': engine_dropdown,
             'stats_label': stats_label,
             'ship_name_mapping': ship_name_mapping,
+            'engine_name_mapping': engine_name_mapping,
             'filtered_ships': filtered_ships,
             'cargo_filter': cargo_filter
         }
@@ -122,6 +218,7 @@ class ShipStatsApp(QWidget):
         engine_dropdown = tab_data['engine_dropdown']
         stats_label = tab_data['stats_label']
         ship_name_mapping = tab_data['ship_name_mapping']
+        engine_name_mapping = tab_data['engine_name_mapping']
         filtered_ships = tab_data['filtered_ships']
         
         ship_name = ship_dropdown.currentText()
@@ -139,7 +236,9 @@ class ShipStatsApp(QWidget):
         if engine_name == "None":
             engine_row = None
         else:
-            matched_eng = self.engines_df[self.engines_df["name"] == engine_name]
+            # Use the mapping to get the macro name from the clean display name
+            engine_macro_name = engine_name_mapping.get(engine_name, engine_name)
+            matched_eng = self.engines_df[self.engines_df["name"] == engine_macro_name]
             engine_row = matched_eng.iloc[0] if not matched_eng.empty else None
 
         travel_speed = compute_travel_speed(ship_row, engine_row)
@@ -156,7 +255,16 @@ class ShipStatsApp(QWidget):
         hull = ship_row.get('hull_max', 'N/A') if ship_row is not None else 'N/A'
         storage_cargo_max = ship_row.get('storage_cargo_max', 0) if ship_row is not None else 0
         storage_cargo_type = ship_row.get('storage_cargo_type', 'N/A') if ship_row is not None else 'N/A'
-        engine_display = engine_row.get('name', 'None') if engine_row is not None else 'None'
+        
+        if engine_row is not None:
+            engine_display_name = engine_row.get('display_name', '')
+            engine_macro_name = engine_row.get('name', 'None')
+            if engine_display_name and engine_display_name != engine_macro_name and not engine_display_name.startswith("Text Ref:"):
+                engine_display = engine_display_name
+            else:
+                engine_display = engine_macro_name
+        else:
+            engine_display = 'None'
 
         if travel_speed is None:
             travel_speed_display = "N/A"
@@ -283,20 +391,34 @@ class ShipStatsApp(QWidget):
     def update_tab_engine_tooltip(self, tab_data):
         """Update engine dropdown tooltip based on current selection."""
         engine_dropdown = tab_data['engine_dropdown']
+        engine_name_mapping = tab_data['engine_name_mapping']
         engine_name = engine_dropdown.currentText()
         
         if engine_name == "None":
-            engine_dropdown.setToolTip("Select an engine to pair with the ship.\nHigher travel thrust = faster travel speed")
+            engine_dropdown.setToolTip("Select an engine to pair with the ship.\nHigher travel thrust = faster travel speed\n(Non-ship engines excluded)")
         else:
+            # Use the mapping to get the macro name from the clean display name
+            engine_macro_name = engine_name_mapping.get(engine_name, engine_name)
+            
             # Find the selected engine
-            matched_eng = self.engines_df[self.engines_df["name"] == engine_name]
+            matched_eng = self.engines_df[self.engines_df["name"] == engine_macro_name]
             if not matched_eng.empty:
                 engine = matched_eng.iloc[0]
                 travel_thrust = engine.get('travel_thrust', 'N/A')
                 forward_thrust = engine.get('forward_thrust', 'N/A')
                 boost_thrust = engine.get('boost_thrust', 'N/A')
+                display_name = engine.get('display_name', engine_macro_name)
+                maker_race = engine.get('maker_race', 'N/A')
+                mk = engine.get('mk', '')
+                basename_ref = engine.get('basename_ref', '')
                 
-                tooltip = f"ENGINE: {engine_name}\n"
+                tooltip = f"ENGINE: {display_name}\n"
+                if basename_ref:
+                    tooltip += f"• Text Reference: {basename_ref}\n"
+                tooltip += f"• Macro: {engine_macro_name}\n"
+                tooltip += f"• Faction: {maker_race}\n"
+                if mk:
+                    tooltip += f"• Mark: {mk}\n"
                 tooltip += f"• Travel Thrust: {travel_thrust}\n"
                 tooltip += f"• Forward Thrust: {forward_thrust}\n"
                 tooltip += f"• Boost Thrust: {boost_thrust}\n"

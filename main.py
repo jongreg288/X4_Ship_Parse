@@ -1,3 +1,5 @@
+# Made with the help of Claude, through Copilot. A labor of desire to know which ship can carry the most and go the fastest.
+# You can reach me through GitHub @jongreg288
 from app.data_parser import load_ship_data, load_engine_data
 from app.gui import ShipStatsApp
 from app.x4_data_extractor import setup_x4_data

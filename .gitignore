@@ -204,3 +204,10 @@ desktop.ini
 # Exclude temporary analysis files
 analysis_*.py
 temp_*.py
+
+# PyInstaller build artifacts
+build/
+dist/
+# Keep spec and version files for building
+# *.spec
+# version_info.txt

@@ -105,18 +105,25 @@ Where:
 To create a distributable .exe file:
 
 ```bash
-python build.py
+python build_exe.py
 ```
 
 This will:
 1. Install PyInstaller if needed
-2. Build X4ShipParse.exe in the `dist` folder
-3. Create an install.bat script for easy installation
+2. Clean previous builds
+3. Build X4_Ship_Parser.exe in the `dist` folder (~62 MB)
+4. Create a standalone executable that includes all dependencies
 
-**Distribution package includes:**
-- X4ShipParse.exe (main application)
-- install.bat (creates desktop/start menu shortcuts)
-- README.md (user instructions)
+**The executable includes:**
+- Complete PyQt6 GUI with 4-tab interface
+- X4 text localization system (71,096+ mappings)  
+- Advanced ship name resolution
+- All Python dependencies bundled
+- No installation required - just run X4_Ship_Parser.exe
+
+**Requirements for end users:**
+- Windows 10/11 64-bit
+- X4: Foundations game files (for data extraction)
 
 ## Development
 

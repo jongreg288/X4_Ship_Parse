@@ -125,34 +125,61 @@ def resolve_text_reference(text_ref):
     """Resolve a text reference like {20101,11102} to human-readable name (legacy function)."""
     return resolve_text_reference_advanced(text_ref)
 
-def extract_storage_info(xml_file: Path, properties_el):
-    """Extract storage information based on ship naming pattern."""
+def extract_storage_info(xml_file: Path, macro_el):
+    """Extract storage information from connections section."""
     storage_cargo_max = 0
     storage_cargo_type = None
     
-    # Extract the ship name and infer the storage component name
-    ship_name = xml_file.stem  # e.g., "ship_arg_l_miner_solid_01_a_macro"
+    # First, try to find storage reference in connections
+    connections_el = macro_el.find("connections")
+    if connections_el is not None:
+        for connection in connections_el.findall("connection"):
+            macro_ref = connection.find("macro")
+            if macro_ref is not None:
+                ref_name = macro_ref.get("ref", "")
+                if "storage" in ref_name.lower():
+                    # Find the storage macro file
+                    storage_file = find_storage_macro(xml_file, ref_name)
+                    if storage_file:
+                        storage_max, storage_type = parse_storage_macro(storage_file)
+                        if storage_max > 0:  # Found valid storage
+                            storage_cargo_max = storage_max
+                            storage_cargo_type = storage_type
+                            break
     
-    # Convert ship name to storage name by replacing "ship_" with "storage_"
-    if ship_name.startswith("ship_"):
-        storage_name = ship_name.replace("ship_", "storage_")
+    # Fallback: try the old naming convention approach
+    if storage_cargo_max == 0:
+        ship_name = xml_file.stem  # e.g., "ship_arg_l_miner_solid_01_a_macro"
         
-        # Find the storage macro file
-        storage_file = find_storage_macro(xml_file, storage_name)
-        if storage_file:
-            storage_max, storage_type = parse_storage_macro(storage_file)
-            storage_cargo_max = storage_max
-            storage_cargo_type = storage_type
+        # Convert ship name to storage name by replacing "ship_" with "storage_"
+        if ship_name.startswith("ship_"):
+            storage_name = ship_name.replace("ship_", "storage_")
+            
+            # Find the storage macro file
+            storage_file = find_storage_macro(xml_file, storage_name)
+            if storage_file:
+                storage_max, storage_type = parse_storage_macro(storage_file)
+                storage_cargo_max = storage_max
+                storage_cargo_type = storage_type
     
     return storage_cargo_max, storage_cargo_type
 
 def find_storage_macro(ship_xml_file: Path, storage_ref: str) -> Path | None:
     """Find the storage macro XML file based on the reference."""
-    # Storage files are in the macros directory alongside ship files
-    macros_dir = ship_xml_file.parent
-    storage_file = macros_dir / f"{storage_ref}.xml"
-    if storage_file.exists():
-        return storage_file
+    # Try multiple possible locations for storage files
+    possible_locations = [
+        # Storage files alongside ship files (same directory)
+        ship_xml_file.parent / f"{storage_ref}.xml",
+        # Storage files in StorageModules
+        Path("data/assets/props/StorageModules/macros") / f"{storage_ref}.xml",
+        # In case there are other storage locations
+        Path("data/assets/props/StorageModules") / f"{storage_ref}.xml"
+    ]
+    
+    for storage_file in possible_locations:
+        if storage_file.exists():
+            return storage_file
+    
     return None
 
 def parse_storage_macro(storage_file: Path):
@@ -175,8 +202,12 @@ def parse_storage_macro(storage_file: Path):
 def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
     ships = []
 
-    # Iterate over all "size_*" folders
+    # Iterate over all "size_*" folders, excluding XS ships
     for size_dir in UNITS_DIR.glob("size_*"):
+        # Skip extra small ships - they're mostly drones, pods and utility vessels
+        if size_dir.name == "size_xs":
+            continue
+            
         macros_dir = size_dir / "macros"
         if not macros_dir.exists():
             continue
@@ -249,6 +280,10 @@ def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
                     drag_horizontal = float(drag_el.get("horizontal", 0))
                     drag_vertical = float(drag_el.get("vertical", 0))
 
+            # Purpose information
+            purpose_el = props.find("purpose")
+            purpose_primary = purpose_el.get("primary") if purpose_el is not None else None
+
             # Component reference (not necessarily engine)
             component_el = macro_el.find("component")
             component_ref = component_el.get("ref") if component_el is not None else None
@@ -274,8 +309,20 @@ def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
                 else:
                     engine_connections = 1  # Default fallback when no component file found
 
+            # Check ship type and skip drones and non-ships
+            ship_el = props.find("ship")
+            ship_type = ship_el.get("type") if ship_el is not None else None
+            if ship_type == "smalldrone":
+                continue  # Skip small drones (mining/fighting drones)
+            if ship_type == "lasertower":
+                continue  # Skip laser towers (defensive structures)
+            
+            # Skip all transport drones (any ships with "transdrone" in filename)
+            if "transdrone" in xml_file.name:
+                continue  # Skip transport drones (small and medium)
+
             # Extract storage information from referenced storage components
-            storage_cargo_max, storage_cargo_type = extract_storage_info(xml_file, props)
+            storage_cargo_max, storage_cargo_type = extract_storage_info(xml_file, macro_el)
 
             # Resolve human-readable name using multiple approaches
             if basename_ref and variation_ref:
@@ -307,6 +354,7 @@ def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
                 "storage": storage,
                 "storage_cargo_max": storage_cargo_max,
                 "storage_cargo_type": storage_cargo_type,
+                "purpose_primary": purpose_primary,
                 "mass": mass,
                 "drag (forward)": drag_forward,
                 "drag (reverse)": drag_reverse,
@@ -356,11 +404,24 @@ def load_engine_data(engine_dir="./data/assets/props/Engines/macros"):
             continue
 
         for macro in root.findall(".//macro[@class='engine']"):
-            name = macro.attrib.get("name", "unknown_engine")
+            macro_name = macro.attrib.get("name", "unknown_engine")
             props = macro.find("properties")
             travel_thrust = boost_thrust = forward_thrust = reverse_thrust = 0
+            
+            # Engine text references
+            name_ref = basename_ref = shortname_ref = description_ref = maker_race = mk = None
 
             if props is not None:
+                # Get identification info
+                ident = props.find("identification")
+                if ident is not None:
+                    name_ref = ident.get("name")
+                    basename_ref = ident.get("basename") 
+                    shortname_ref = ident.get("shortname")
+                    description_ref = ident.get("description")
+                    maker_race = ident.get("makerrace")
+                    mk = ident.get("mk")
+                
                 # Travel thrust
                 travel = props.find("travel")
                 if travel is not None:
@@ -375,8 +436,42 @@ def load_engine_data(engine_dir="./data/assets/props/Engines/macros"):
                     forward_thrust = float(thrust.attrib.get("forward", 0))
                     reverse_thrust = float(thrust.attrib.get("reverse", 0))
 
+            # Resolve human-readable name using basename or name reference
+            display_name = macro_name  # fallback
+            if basename_ref:
+                resolved_basename = resolve_text_reference_advanced(basename_ref)
+                if resolved_basename:
+                    # Check if the resolved text is a complex reference like "(Travel Engine){20107,1401}"
+                    if resolved_basename.startswith("(") and "{" in resolved_basename:
+                        complex_name = parse_complex_name_reference(resolved_basename)
+                        base_name = complex_name if complex_name else resolved_basename
+                    else:
+                        base_name = resolved_basename
+                    
+                    # Add mark/version info if available
+                    if mk:
+                        display_name = f"{base_name} Mk{mk}"
+                    else:
+                        display_name = base_name
+            elif name_ref:
+                resolved_name = resolve_text_reference_advanced(name_ref)
+                if resolved_name:
+                    # Check if the resolved text is a complex reference
+                    if resolved_name.startswith("(") and "{" in resolved_name:
+                        complex_name = parse_complex_name_reference(resolved_name)
+                        display_name = complex_name if complex_name else resolved_name
+                    else:
+                        display_name = resolved_name
+
             engines.append({
-                "name": name,
+                "name": macro_name,
+                "display_name": display_name,
+                "basename_ref": basename_ref,
+                "name_ref": name_ref,
+                "shortname_ref": shortname_ref,
+                "description_ref": description_ref,
+                "maker_race": maker_race,
+                "mk": mk,
                 "travel_thrust": travel_thrust,
                 "boost_thrust": boost_thrust,
                 "forward_thrust": forward_thrust,
