@@ -3,7 +3,7 @@
 ; https://jrsoftware.org/isinfo.php
 
 #define MyAppName "X4 ShipMatrix"
-#define MyAppVersion "0.1.3"
+#define MyAppVersion "0.2.1"
 #define MyAppPublisher "jongreg288"
 #define MyAppURL "https://github.com/jongreg288/X4_Ship_Parse"
 #define MyAppExeName "X4 ShipMatrix.exe"

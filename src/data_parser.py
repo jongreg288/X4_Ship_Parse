@@ -1,9 +1,37 @@
 import xml.etree.ElementTree as ET
 from pathlib import Path
 import pandas as pd
-from .language_detector import language_detector
+from typing import Optional
+try:
+    from .language_detector import language_detector
+except ImportError:
+    from language_detector import language_detector
 
-UNITS_DIR = Path("data/assets/units")
+# Data directory search paths - check both main and build_scripts locations
+DATA_PATHS = [
+    Path("data"),
+    Path("build_scripts/data")
+]
+
+def find_data_path(relative_path):
+    """Find the first existing data path for a given relative path."""
+    for base_path in DATA_PATHS:
+        full_path = base_path / relative_path
+        if full_path.exists():
+            return full_path
+    return None
+
+def get_all_data_paths(relative_path):
+    """Get all existing data paths for a given relative path."""
+    paths = []
+    for base_path in DATA_PATHS:
+        full_path = base_path / relative_path
+        if full_path.exists():
+            paths.append(full_path)
+    return paths
+
+# Dynamic UNITS_DIR - will use the first available path
+UNITS_DIR = find_data_path("assets/units") or Path("data/assets/units")
 
 # Text mappings loaded from X4 localization files
 TEXT_MAPPINGS = {}
@@ -25,13 +53,14 @@ def load_text_mappings():
     # Clear existing mappings when switching languages
     TEXT_MAPPINGS.clear()
     
-    text_file = Path("data/t") / lang_file
+    # Search for text file in all data locations
+    text_file = find_data_path(f"t/{lang_file}")
     
     # Try fallback to English if preferred language file doesn't exist
-    if not text_file.exists():
-        fallback_file = Path("data/t/0001-l044.xml")
-        if fallback_file.exists():
-            print(f"⚠️ {lang_name} text file not found: {text_file}")
+    if not text_file:
+        fallback_file = find_data_path("t/0001-l044.xml")
+        if fallback_file:
+            print(f"⚠️ {lang_name} text file not found")
             print(f"🔄 Using English fallback: {fallback_file}")
             text_file = fallback_file
             lang_name = "English (fallback)"
@@ -256,6 +285,7 @@ def parse_storage_macro(storage_file: Path):
 def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
     ships = []
 
+    # Use the dynamic UNITS_DIR which already points to the best available location
     # Iterate over all "size_*" folders, excluding XS ships
     for size_dir in UNITS_DIR.glob("size_*"):
         # Skip extra small ships - they're mostly drones, pods and utility vessels
@@ -483,117 +513,133 @@ def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
 
     return ships_df
 
-def load_engine_data(engine_dir="./data/assets/props/Engines/macros"):
+def load_engine_data(engine_dir=None):
     """
-    Loads all engine macros from the specified folder.
+    Loads all engine macros from the specified folder or searches all data locations.
     Returns a DataFrame with columns:
     name, travel_thrust, boost_thrust, forward_thrust, reverse_thrust
     """
-    engine_dir = Path(engine_dir)
-    if not engine_dir.exists():
-        print(f"⚠️ Engine folder not found: {engine_dir}")
-        return pd.DataFrame()
+    # If no specific directory provided, search all data locations for engine macros
+    if engine_dir is None:
+        engine_macro_dirs = get_all_data_paths("assets/props/Engines/macros")
+        if not engine_macro_dirs:
+            print(f"⚠️ No engine macro folders found in any data location")
+            return pd.DataFrame()
+    else:
+        engine_dir = Path(engine_dir)
+        if not engine_dir.exists():
+            print(f"⚠️ Engine folder not found: {engine_dir}")
+            return pd.DataFrame()
+        engine_macro_dirs = [engine_dir]
 
     engines = []
 
-    for xml_file in engine_dir.glob("*.xml"):
-        try:
-            tree = ET.parse(xml_file)
-            root = tree.getroot()
-        except ET.ParseError:
-            print(f"⚠️ Failed to parse {xml_file}")
-            continue
+    # Process all engine macro directories
+    for engine_macro_dir in engine_macro_dirs:
+        print(f"🔍 Loading engines from: {engine_macro_dir}")
+        for xml_file in engine_macro_dir.glob("*.xml"):
+            try:
+                tree = ET.parse(xml_file)
+                root = tree.getroot()
+            except ET.ParseError:
+                print(f"⚠️ Failed to parse {xml_file}")
+                continue
 
-        for macro in root.findall(".//macro[@class='engine']"):
-            macro_name = macro.attrib.get("name", "unknown_engine")
-            props = macro.find("properties")
-            travel_thrust = boost_thrust = forward_thrust = reverse_thrust = 0
-            
-            # Engine text references
-            name_ref = basename_ref = shortname_ref = description_ref = maker_race = mk = None
-
-            if props is not None:
-                # Get identification info
-                ident = props.find("identification")
-                if ident is not None:
-                    name_ref = ident.get("name")
-                    basename_ref = ident.get("basename") 
-                    shortname_ref = ident.get("shortname")
-                    description_ref = ident.get("description")
-                    maker_race = ident.get("makerrace")
-                    mk = ident.get("mk")
+            for macro in root.findall(".//macro[@class='engine']"):
+                macro_name = macro.attrib.get("name", "unknown_engine")
+                props = macro.find("properties")
+                travel_thrust = boost_thrust = forward_thrust = reverse_thrust = 0
                 
-                # Travel thrust
-                travel = props.find("travel")
-                if travel is not None:
-                    travel_thrust = float(travel.attrib.get("thrust", 0))
-                # Boost thrust
-                boost = props.find("boost")
-                if boost is not None:
-                    boost_thrust = float(boost.attrib.get("thrust", 0))
-                # Forward/reverse thrust
-                thrust = props.find("thrust")
-                if thrust is not None:
-                    forward_thrust = float(thrust.attrib.get("forward", 0))
-                    reverse_thrust = float(thrust.attrib.get("reverse", 0))
+                # Engine text references
+                name_ref = basename_ref = shortname_ref = description_ref = maker_race = mk = None
 
-            # Resolve human-readable name using basename or name reference
-            display_name = macro_name  # fallback
-            if basename_ref:
-                resolved_basename = resolve_text_reference_advanced(basename_ref)
-                if resolved_basename:
-                    # Check if the resolved text is a complex reference like "(Travel Engine){20107,1401}"
-                    if resolved_basename.startswith("(") and "{" in resolved_basename:
-                        complex_name = parse_complex_name_reference(resolved_basename)
-                        base_name = complex_name if complex_name else resolved_basename
-                    else:
-                        base_name = resolved_basename
+                if props is not None:
+                    # Get identification info
+                    ident = props.find("identification")
+                    if ident is not None:
+                        name_ref = ident.get("name")
+                        basename_ref = ident.get("basename") 
+                        shortname_ref = ident.get("shortname")
+                        description_ref = ident.get("description")
+                        maker_race = ident.get("makerrace")
+                        mk = ident.get("mk")
                     
-                    # Add mark/version info if available
-                    if mk:
-                        display_name = f"{base_name} Mk{mk}"
-                    else:
-                        display_name = base_name
-            elif name_ref:
-                resolved_name = resolve_text_reference_advanced(name_ref)
-                if resolved_name:
-                    # Check if the resolved text is a complex reference
-                    if resolved_name.startswith("(") and "{" in resolved_name:
-                        complex_name = parse_complex_name_reference(resolved_name)
-                        display_name = complex_name if complex_name else resolved_name
-                    else:
-                        display_name = resolved_name
+                    # Travel thrust
+                    travel = props.find("travel")
+                    if travel is not None:
+                        travel_thrust = float(travel.attrib.get("thrust", 0))
+                    # Boost thrust
+                    boost = props.find("boost")
+                    if boost is not None:
+                        boost_thrust = float(boost.attrib.get("thrust", 0))
+                    # Forward/reverse thrust
+                    thrust = props.find("thrust")
+                    if thrust is not None:
+                        forward_thrust = float(thrust.attrib.get("forward", 0))
+                        reverse_thrust = float(thrust.attrib.get("reverse", 0))
 
-            engines.append({
-                "name": macro_name,
-                "display_name": display_name,
-                "basename_ref": basename_ref,
-                "name_ref": name_ref,
-                "shortname_ref": shortname_ref,
-                "description_ref": description_ref,
-                "maker_race": maker_race,
-                "mk": mk,
-                "travel_thrust": travel_thrust,
-                "boost_thrust": boost_thrust,
-                "forward_thrust": forward_thrust,
-                "reverse_thrust": reverse_thrust
-            })
+                # Resolve human-readable name using basename or name reference
+                display_name = macro_name  # fallback
+                if basename_ref:
+                    resolved_basename = resolve_text_reference_advanced(basename_ref)
+                    if resolved_basename:
+                        # Check if the resolved text is a complex reference like "(Travel Engine){20107,1401}"
+                        if resolved_basename.startswith("(") and "{" in resolved_basename:
+                            complex_name = parse_complex_name_reference(resolved_basename)
+                            base_name = complex_name if complex_name else resolved_basename
+                        else:
+                            base_name = resolved_basename
+                        
+                        # Add mark/version info if available
+                        if mk:
+                            display_name = f"{base_name} Mk{mk}"
+                        else:
+                            display_name = base_name
+                elif name_ref:
+                    resolved_name = resolve_text_reference_advanced(name_ref)
+                    if resolved_name:
+                        # Check if the resolved text is a complex reference
+                        if resolved_name.startswith("(") and "{" in resolved_name:
+                            complex_name = parse_complex_name_reference(resolved_name)
+                            display_name = complex_name if complex_name else resolved_name
+                        else:
+                            display_name = resolved_name
+
+                engines.append({
+                    "name": macro_name,
+                    "display_name": display_name,
+                    "basename_ref": basename_ref,
+                    "name_ref": name_ref,
+                    "shortname_ref": shortname_ref,
+                    "description_ref": description_ref,
+                    "maker_race": maker_race,
+                    "mk": mk,
+                    "travel_thrust": travel_thrust,
+                    "boost_thrust": boost_thrust,
+                    "forward_thrust": forward_thrust,
+                    "reverse_thrust": reverse_thrust
+                })
 
     df = pd.DataFrame(engines)
-    print(f"Loaded {len(df)} engines from {engine_dir}")
+    total_dirs = len(engine_macro_dirs) if 'engine_macro_dirs' in locals() else 1
+    print(f"Loaded {len(df)} engines from {total_dirs} data location(s)")
     return df
 
 def parse_shields():
     """Parse shield data from X4 shield macro files."""
-    shield_dir = Path("data/assets/props/SurfaceElements/macros")
+    # Search all data locations for shield directories
+    shield_dirs = get_all_data_paths("assets/props/SurfaceElements/macros")
     shields = []
     
-    if not shield_dir.exists():
-        print(f"Shield directory not found: {shield_dir}")
+    if not shield_dirs:
+        print(f"No shield directories found in any data location")
         return pd.DataFrame()
     
-    # Find all shield macro files
-    shield_files = list(shield_dir.glob("shield_*.xml"))
+    # Find all shield macro files from all directories
+    shield_files = []
+    for shield_dir in shield_dirs:
+        print(f"🔍 Loading shields from: {shield_dir}")
+        shield_files.extend(list(shield_dir.glob("shield_*.xml")))
     
     for shield_file in shield_files:
         try:
@@ -689,5 +735,167 @@ def parse_shields():
             print(f"Unexpected error parsing {shield_file}: {e}")
     
     df = pd.DataFrame(shields)
-    print(f"Loaded {len(df)} shields from {shield_dir}")
+    print(f"Loaded {len(df)} shields from {len(shield_dirs)} data location(s)")
     return df
+
+
+# ==================== CSV LOADING FUNCTIONS ====================
+
+def load_weapons_from_csv(csv_path: Optional[Path] = None) -> pd.DataFrame:
+    """Load weapons data from CSV file for fast access."""
+    if csv_path is None:
+        csv_path = Path("data/csv_cache/weapons.csv")
+    
+    if not csv_path.exists():
+        print(f"⚠️ Weapons CSV not found at {csv_path}")
+        return pd.DataFrame()
+    
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"✅ Loaded {len(df)} weapons from CSV")
+        return df
+    except Exception as e:
+        print(f"❌ Error loading weapons CSV: {e}")
+        return pd.DataFrame()
+
+
+def load_turrets_from_csv(csv_path: Optional[Path] = None) -> pd.DataFrame:
+    """Load turrets data from CSV file for fast access."""
+    if csv_path is None:
+        csv_path = Path("data/csv_cache/turrets.csv")
+    
+    if not csv_path.exists():
+        print(f"⚠️ Turrets CSV not found at {csv_path}")
+        return pd.DataFrame()
+    
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"✅ Loaded {len(df)} turrets from CSV")
+        return df
+    except Exception as e:
+        print(f"❌ Error loading turrets CSV: {e}")
+        return pd.DataFrame()
+
+
+def load_ships_from_csv(csv_path: Optional[Path] = None) -> pd.DataFrame:
+    """Load ships data from CSV file for fast access."""
+    if csv_path is None:
+        csv_path = Path("data/csv_cache/ships.csv")
+    
+    if not csv_path.exists():
+        print(f"⚠️ Ships CSV not found at {csv_path}")
+        return pd.DataFrame()
+    
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"✅ Loaded {len(df)} ships from CSV")
+        return df
+    except Exception as e:
+        print(f"❌ Error loading ships CSV: {e}")
+        return pd.DataFrame()
+
+
+def load_engines_from_csv(csv_path: Optional[Path] = None) -> pd.DataFrame:
+    """Load engines data from CSV file for fast access."""
+    if csv_path is None:
+        csv_path = Path("data/csv_cache/engines.csv")
+    
+    if not csv_path.exists():
+        print(f"⚠️ Engines CSV not found at {csv_path}")
+        return pd.DataFrame()
+    
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"✅ Loaded {len(df)} engines from CSV")
+        return df
+    except Exception as e:
+        print(f"❌ Error loading engines CSV: {e}")
+        return pd.DataFrame()
+
+
+def load_shields_from_csv(csv_path: Optional[Path] = None) -> pd.DataFrame:
+    """Load shields data from CSV file for fast access."""
+    if csv_path is None:
+        csv_path = Path("data/csv_cache/shields.csv")
+    
+    if not csv_path.exists():
+        print(f"⚠️ Shields CSV not found at {csv_path}")
+        return pd.DataFrame()
+    
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"✅ Loaded {len(df)} shields from CSV")
+        return df
+    except Exception as e:
+        print(f"❌ Error loading shields CSV: {e}")
+        return pd.DataFrame()
+
+
+def generate_all_csv_files():
+    """Generate all CSV files from X4 data."""
+    print("=== Generating All CSV Files ===")
+    
+    # Load text mappings for proper name resolution
+    load_text_mappings()
+    
+    # Create CSV output directory
+    csv_dir = Path("data/csv_cache")
+    csv_dir.mkdir(exist_ok=True)
+    
+    # Generate ships CSV
+    print("📊 Generating ships.csv...")
+    engines_df = load_engine_data()  # Load engines first for ship processing
+    ships_df = load_ship_data(engines_df)
+    if not ships_df.empty:
+        ships_csv = csv_dir / "ships.csv"
+        ships_df.to_csv(ships_csv, index=False)
+        print(f"✅ Saved {len(ships_df)} ships to {ships_csv}")
+    
+    # Generate engines CSV  
+    print("📊 Generating engines.csv...")
+    if not engines_df.empty:
+        engines_csv = csv_dir / "engines.csv"
+        engines_df.to_csv(engines_csv, index=False)
+        print(f"✅ Saved {len(engines_df)} engines to {engines_csv}")
+    
+    # Generate shields CSV
+    print("📊 Generating shields.csv...")
+    shields_df = parse_shields()
+    if not shields_df.empty:
+        shields_csv = csv_dir / "shields.csv"
+        shields_df.to_csv(shields_csv, index=False)
+        print(f"✅ Saved {len(shields_df)} shields to {shields_csv}")
+    
+    # Generate weapons and turrets CSV using the dedicated generator
+    print("📊 Generating weapons.csv and turrets.csv...")
+    try:
+        from .csv_generator import WeaponCSVGenerator
+    except ImportError:
+        print("⚠️ csv_generator module not found, skipping weapons/turrets CSV generation")
+        return {
+            "ships": len(ships_df) if not ships_df.empty else 0,
+            "engines": len(engines_df) if not engines_df.empty else 0,
+            "shields": len(shields_df) if not shields_df.empty else 0,
+            "weapons": 0,
+            "turrets": 0
+        }
+    
+    generator = WeaponCSVGenerator()
+    generator.scan_weapon_systems()
+    
+    weapons_csv = csv_dir / "weapons.csv"
+    turrets_csv = csv_dir / "turrets.csv"
+    
+    generator.generate_weapon_csv(weapons_csv)
+    generator.generate_turret_csv(turrets_csv)
+    
+    print("=== CSV Generation Complete ===")
+    print(f"📁 All CSV files saved to: {csv_dir}")
+    
+    return {
+        "ships": len(ships_df) if not ships_df.empty else 0,
+        "engines": len(engines_df) if not engines_df.empty else 0,
+        "shields": len(shields_df) if not shields_df.empty else 0,
+        "weapons": len(generator.weapons_data),
+        "turrets": len(generator.turrets_data)
+    }

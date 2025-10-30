@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QFormLayout, QTabWidget,
-    QMainWindow, QMenuBar, QMessageBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QFormLayout, QTabWidget,
+    QMainWindow, QMenuBar, QMessageBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton,
+    QSplitter, QScrollArea
 )
 from PyQt6.QtCore import QTimer
 from .logic import compute_travel_speed
@@ -35,14 +36,16 @@ except (ImportError, AttributeError, RuntimeError) as e:
     print(f"Warning: matplotlib not available - plotting features disabled: {e}")
 
 # Version information (network-free main application)
-CURRENT_VERSION = "0.1.3"
+CURRENT_VERSION = "0.2.1 alpha"
 
 class ShipStatsApp(QMainWindow):
-    def __init__(self, ships_df, engines_df, shields_df=None):
+    def __init__(self, ships_df, engines_df, shields_df=None, weapons_df=None, turrets_df=None):
         super().__init__()
         self.ships_df = ships_df
         self.engines_df = engines_df
         self.shields_df = shields_df if shields_df is not None else pd.DataFrame()
+        self.weapons_df = weapons_df if weapons_df is not None else pd.DataFrame()
+        self.turrets_df = turrets_df if turrets_df is not None else pd.DataFrame()
         # Debug info - GUI received ship data successfully
         self.init_ui()
         
@@ -65,34 +68,18 @@ class ShipStatsApp(QMainWindow):
         self.tab_widget = QTabWidget()
         
         # Create 4 tabs
-        self.fighters_tab = self.create_ship_tab("fight", "Fighters")
+        self.comparison_tab = self.create_comparison_tab()  # New comprehensive comparison tab
         self.container_tab = self.create_ship_tab("trade", "Container Ships")
         self.solid_tab = self.create_ship_tab("solid", "Solid Cargo Ships")
         self.liquid_tab = self.create_ship_tab("liquid", "Liquid Cargo Ships")
         
         # Add tabs to tab widget
-        self.tab_widget.addTab(self.fighters_tab, "Fighters")
+        self.tab_widget.addTab(self.comparison_tab, "Comparison")
         self.tab_widget.addTab(self.container_tab, "Container")
         self.tab_widget.addTab(self.solid_tab, "Solid")
         self.tab_widget.addTab(self.liquid_tab, "Liquid")
         
         main_layout.addWidget(self.tab_widget)
-        
-        # Add DLC disclaimer at the bottom in deep red
-        dlc_disclaimer = QLabel(
-            "DLC Ships are not yet supported, look for them to be added in future patches.\nThank you."
-        )
-        dlc_disclaimer.setStyleSheet(
-            "color: #8B0000; "  # Deep red color
-            "font-weight: bold; "
-            "font-size: 11pt; "
-            "padding: 10px; "
-            "text-align: center;"
-        )
-        dlc_disclaimer.setWordWrap(True)
-        from PyQt6.QtCore import Qt
-        dlc_disclaimer.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(dlc_disclaimer)
         
         central_widget.setLayout(main_layout)
     
@@ -382,6 +369,8 @@ class ShipStatsApp(QMainWindow):
             'tel': 'Teladi', 'teladi': 'Teladi', 
             'par': 'Paranid', 'paranid': 'Paranid',
             'spl': 'Split', 'split': 'Split',
+            'bor': 'Boron', 'boron': 'Boron',
+            'ter': 'Terran', 'terran': 'Terran',
             'xen': 'Xenon', 'xenon': 'Xenon',
             'kha': 'Kha\'ak', 'khaak': 'Kha\'ak'
         }
@@ -683,6 +672,244 @@ class ShipStatsApp(QMainWindow):
         
         shield_dropdown.blockSignals(False)
     
+    def create_comparison_tab(self):
+        """Create the comprehensive comparison tab with side panel and detailed stats."""
+        from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QSplitter, QScrollArea, QGroupBox
+        from PyQt6.QtCore import Qt
+        
+        # Main widget for the tab
+        tab_widget = QWidget()
+        main_layout = QHBoxLayout()
+        
+        # Create splitter for side panel and main content
+        splitter = QSplitter(Qt.Orientation.Horizontal)
+        
+        # Left side panel for component selection
+        side_panel = self.create_component_selection_panel()
+        side_panel.setMinimumWidth(300)
+        side_panel.setMaximumWidth(400)
+        
+        # Right main content area for ship stats and comparison
+        main_content = self.create_main_comparison_content()
+        
+        # Add panels to splitter
+        splitter.addWidget(side_panel)
+        splitter.addWidget(main_content)
+        splitter.setSizes([350, 1000])  # Default sizes
+        
+        main_layout.addWidget(splitter)
+        tab_widget.setLayout(main_layout)
+        
+        return tab_widget
+    
+    def create_component_selection_panel(self):
+        """Create the side panel with all component selection dropdowns."""
+        from PyQt6.QtWidgets import QScrollArea, QGroupBox, QVBoxLayout, QFormLayout
+        
+        # Create scroll area for the panel
+        scroll_area = QScrollArea()
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout()
+        
+        # Ship Selection Group
+        ship_group = QGroupBox("Ship Selection")
+        ship_layout = QFormLayout()
+        
+        # Ship dropdown (all ships, no restrictions)
+        ship_dropdown = QComboBox()
+        ship_items = ["None"]
+        ship_name_mapping = {}
+        
+        # Add ALL ships regardless of type
+        for _, row in self.ships_df.iterrows():
+            display_name = row.get('display_name', '')
+            macro_name = row.get('macro_name', 'Unknown')
+            name_ref = row.get('name_ref', '')
+            
+            if display_name and display_name != macro_name and not display_name.startswith("Text Ref:"):
+                clean_name = display_name
+            elif name_ref:
+                clean_name = f"Text Ref: {name_ref}"
+            else:
+                clean_name = macro_name
+            
+            ship_items.append(clean_name)
+            ship_name_mapping[clean_name] = macro_name
+        
+        ship_dropdown.addItems(ship_items)
+        ship_layout.addRow("Ship:", ship_dropdown)
+        
+        # Size Filter
+        size_filter = QComboBox()
+        size_filter.addItems(["All Sizes", "S", "M", "L", "XL"])
+        ship_layout.addRow("Size Filter:", size_filter)
+        
+        # Type Filter  
+        type_filter = QComboBox()
+        ship_types = ["All Types"] + sorted(self.ships_df['ship_type'].dropna().unique())
+        type_filter.addItems(ship_types)
+        ship_layout.addRow("Type Filter:", type_filter)
+        
+        ship_group.setLayout(ship_layout)
+        scroll_layout.addWidget(ship_group)
+        
+        # Component Selection Groups
+        # Engine Group
+        engine_group = QGroupBox("Engine")
+        engine_layout = QFormLayout()
+        engine_dropdown = QComboBox()
+        engine_dropdown.addItems(["None"])  # Will be populated based on ship selection
+        engine_layout.addRow("Engine:", engine_dropdown)
+        engine_group.setLayout(engine_layout)
+        scroll_layout.addWidget(engine_group)
+        
+        # Shield Group
+        shield_group = QGroupBox("Shields")
+        shield_layout = QVBoxLayout()
+        shield_dropdown = QComboBox()
+        shield_dropdown.addItems(["None"])
+        shield_layout.addWidget(shield_dropdown)
+        shield_group.setLayout(shield_layout)
+        scroll_layout.addWidget(shield_group)
+        
+        # Weapons Group
+        weapons_group = QGroupBox("Primary Weapons")
+        weapons_layout = QVBoxLayout()
+        
+        # Add weapon selection with multi-select capability
+        weapons_dropdown = QComboBox()
+        weapons_dropdown.addItems(["None"])
+        weapons_layout.addWidget(QLabel("Weapon 1:"))
+        weapons_layout.addWidget(weapons_dropdown)
+        
+        # Add second weapon slot
+        weapons_dropdown_2 = QComboBox()
+        weapons_dropdown_2.addItems(["None"])
+        weapons_layout.addWidget(QLabel("Weapon 2:"))
+        weapons_layout.addWidget(weapons_dropdown_2)
+        
+        weapons_group.setLayout(weapons_layout)
+        scroll_layout.addWidget(weapons_group)
+        
+        # Turrets Group
+        turrets_group = QGroupBox("Turrets")
+        turrets_layout = QVBoxLayout()
+        
+        # Add turret selection slots
+        turret_dropdown_1 = QComboBox()
+        turret_dropdown_1.addItems(["None"])
+        turrets_layout.addWidget(QLabel("Turret Slot 1:"))
+        turrets_layout.addWidget(turret_dropdown_1)
+        
+        turret_dropdown_2 = QComboBox()
+        turret_dropdown_2.addItems(["None"])
+        turrets_layout.addWidget(QLabel("Turret Slot 2:"))
+        turrets_layout.addWidget(turret_dropdown_2)
+        
+        turret_dropdown_3 = QComboBox()
+        turret_dropdown_3.addItems(["None"])
+        turrets_layout.addWidget(QLabel("Turret Slot 3:"))
+        turrets_layout.addWidget(turret_dropdown_3)
+        
+        turrets_group.setLayout(turrets_layout)
+        scroll_layout.addWidget(turrets_group)
+        
+        scroll_widget.setLayout(scroll_layout)
+        scroll_area.setWidget(scroll_widget)
+        scroll_area.setWidgetResizable(True)
+        
+        # Store references for later use
+        self.comparison_ship_dropdown = ship_dropdown
+        self.comparison_ship_mapping = ship_name_mapping
+        self.comparison_size_filter = size_filter
+        self.comparison_type_filter = type_filter
+        self.comparison_engine_dropdown = engine_dropdown
+        self.comparison_shield_dropdown = shield_dropdown
+        self.comparison_weapons_dropdown = weapons_dropdown
+        self.comparison_weapons_dropdown_2 = weapons_dropdown_2
+        self.comparison_turret_dropdown_1 = turret_dropdown_1
+        self.comparison_turret_dropdown_2 = turret_dropdown_2
+        self.comparison_turret_dropdown_3 = turret_dropdown_3
+        
+        # Connect signals for filtering and updates
+        ship_dropdown.currentIndexChanged.connect(self.update_comparison_display)
+        size_filter.currentIndexChanged.connect(self.filter_ships_by_size)
+        type_filter.currentIndexChanged.connect(self.filter_ships_by_type)
+        
+        # Connect engine and shield selection changes
+        engine_dropdown.currentIndexChanged.connect(self.update_comparison_display)
+        shield_dropdown.currentIndexChanged.connect(self.update_comparison_display)
+        
+        # Connect weapon and turret selection changes
+        weapons_dropdown.currentIndexChanged.connect(self.update_comparison_display)
+        weapons_dropdown_2.currentIndexChanged.connect(self.update_comparison_display)
+        turret_dropdown_1.currentIndexChanged.connect(self.update_comparison_display)
+        turret_dropdown_2.currentIndexChanged.connect(self.update_comparison_display)
+        turret_dropdown_3.currentIndexChanged.connect(self.update_comparison_display)
+        
+        return scroll_area
+    
+    def create_main_comparison_content(self):
+        """Create the main content area for ship stats and comparison."""
+        from PyQt6.QtWidgets import QScrollArea, QVBoxLayout, QHBoxLayout, QGroupBox, QLabel
+        
+        # Create scroll area for main content
+        scroll_area = QScrollArea()
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+        
+        # Ship Stats Section
+        ship_stats_group = QGroupBox("Ship Statistics")
+        ship_stats_layout = QVBoxLayout()
+        
+        ship_stats_label = QLabel("Select a ship to view detailed statistics")
+        ship_stats_label.setWordWrap(True)
+        ship_stats_label.setStyleSheet("""
+            QLabel {
+                padding: 20px;
+                background-color: #2b2b2b;
+                color: #ffffff;
+                border: 2px solid #444444;
+                border-radius: 8px;
+                font-size: 12px;
+            }
+        """)
+        
+        ship_stats_layout.addWidget(ship_stats_label)
+        ship_stats_group.setLayout(ship_stats_layout)
+        content_layout.addWidget(ship_stats_group)
+        
+        # Weapons Section
+        weapons_group = QGroupBox("Weapons & Combat")
+        weapons_layout = QVBoxLayout()
+        
+        weapons_label = QLabel("Select a ship to view weapon statistics")
+        weapons_label.setWordWrap(True)
+        weapons_label.setStyleSheet("""
+            QLabel {
+                padding: 20px;
+                background-color: #2b2b2b;
+                color: #ffffff;
+                border: 2px solid #444444;
+                border-radius: 8px;
+                font-size: 12px;
+            }
+        """)
+        
+        weapons_layout.addWidget(weapons_label)
+        weapons_group.setLayout(weapons_layout)
+        content_layout.addWidget(weapons_group)
+        
+        content_widget.setLayout(content_layout)
+        scroll_area.setWidget(content_widget)
+        scroll_area.setWidgetResizable(True)
+        
+        # Store references
+        self.comparison_ship_stats_label = ship_stats_label
+        self.comparison_weapons_label = weapons_label
+        
+        return scroll_area
+    
     def create_ship_tab(self, cargo_filter, tab_name):
         """Create a tab with ship selection and stats for a specific cargo type."""
         tab_widget = QWidget()
@@ -733,11 +960,7 @@ class ShipStatsApp(QMainWindow):
             ship_name_mapping[clean_name] = macro_name
         
         ship_dropdown.addItems(ship_items)
-        # Set appropriate tooltips based on tab type
-        if cargo_filter == "fight":
-            ship_dropdown.setToolTip(f"Select a fighter to analyze.\nShows combat ships optimized for battle")
-        else:
-            ship_dropdown.setToolTip(f"Select a {cargo_filter} ship to analyze.\nShows clean ship names from the game")
+        # Tooltips removed - moved to Help menu
         
         # Create engine dropdown (exclude XS engines)
         engine_dropdown = QComboBox()
@@ -777,19 +1000,13 @@ class ShipStatsApp(QMainWindow):
         
         engine_dropdown.addItems(engine_items)
         
-        # Set appropriate engine tooltips based on tab type
-        if cargo_filter == "fight":
-            engine_dropdown.setToolTip("Select an engine to pair with the fighter.\nHigher travel thrust = better combat mobility")
-        else:
-            engine_dropdown.setToolTip("Select an engine to pair with the ship.\nShows clean engine names from the game")
+        # Engine tooltips removed - moved to Help menu
         
-        # Create stats label with appropriate tooltip
+        # Create stats label
         if cargo_filter == "fight":
             stats_label = QLabel(f"Select a fighter and engine to see combat stats.")
-            stats_label.setToolTip("Fighter statistics display.\nShows combat-relevant metrics and performance ratings.")
         else:
             stats_label = QLabel(f"Select a {cargo_filter} ship and engine to see stats.")
-            stats_label.setToolTip("Ship statistics display.\nHover over values for detailed explanations.")
         
         # Store references for this tab
         tab_data = {
@@ -811,9 +1028,7 @@ class ShipStatsApp(QMainWindow):
         
         # Connect signals for stats updates
         ship_dropdown.currentIndexChanged.connect(lambda: self.update_tab_stats(tab_data))
-        ship_dropdown.currentIndexChanged.connect(lambda: self.update_tab_ship_tooltip(tab_data))
         engine_dropdown.currentIndexChanged.connect(lambda: self.update_tab_stats(tab_data))
-        engine_dropdown.currentIndexChanged.connect(lambda: self.update_tab_engine_tooltip(tab_data))
         
         # Create form layout
         form = QFormLayout()
@@ -913,7 +1128,6 @@ class ShipStatsApp(QMainWindow):
                 shield_name_mapping[clean_name] = macro_name
         
         shield_dropdown.addItems(shield_items)
-        shield_dropdown.setToolTip("Select a shield generator for the fighter.\nShield compatibility is based on ship size class and hardpoint count.")
         shield_dropdown.setEnabled(True)  # Enable shield selection
         shield_selection_layout.addRow("Shield:", shield_dropdown)
         shield_layout.addLayout(shield_selection_layout)
@@ -1308,15 +1522,7 @@ class ShipStatsApp(QMainWindow):
         stats_label.setText(text)
         stats_label.setWordWrap(True)  # Enable word wrap for better display
         
-        # Update tooltip with detailed information
-        if cargo_filter == "fight":
-            self.update_fighter_detailed_tooltip(tab_data, ship_row, engine_row, travel_speed)
-        else:
-            # For cargo tabs, we need to pass the cargo_speed_ratio that was calculated above
-            cargo_speed_ratio = None
-            if travel_speed is not None and travel_speed > 0 and storage_cargo_max > 0:
-                cargo_speed_ratio = ((1000000 / storage_cargo_max) * (50000 / travel_speed)) / 60 * 2
-            self.update_tab_detailed_tooltip(tab_data, ship_row, engine_row, travel_speed, storage_cargo_max, cargo_speed_ratio)
+        # Tooltip updates removed - moved to Help menu
 
     def update_tab_detailed_tooltip(self, tab_data, ship_row, engine_row, travel_speed, storage_cargo_max, cargo_speed_ratio):
         """Update the stats label tooltip with detailed information."""
@@ -1580,11 +1786,15 @@ class ShipStatsApp(QMainWindow):
                     shield_text += f"• <span style='color: #0077cc;'>Boron</span>: Advanced shielding technology<br>"
                     shield_text += f"• <span style='color: #0066cc;'>Argon</span>: Reliable standard<br>"
                     shield_text += f"• <span style='color: #ff6600;'>Paranid</span>: Fast recharge<br>"
+                elif maker_race in ['ter', 'terran']:
+                    shield_text += f"• <span style='color: #336699;'>Terran</span>: Earth military-grade technology (faction bonus)<br>"
+                    shield_text += f"• <span style='color: #0066cc;'>Argon</span>: Compatible Commonwealth tech<br>"
+                    shield_text += f"• <span style='color: #009900;'>Teladi</span>: High capacity alternative<br>"
                 else:
-                    shield_text += f"• <span style='color: #0066cc;'>Argon</span>: Balanced, widely available<br>"
+                    shield_text += f"• <span style='color: #0066cc;'>Argon</span>: Balanced choice<br>"
                     shield_text += f"• <span style='color: #009900;'>Teladi</span>: High capacity<br>"
                     shield_text += f"• <span style='color: #ff6600;'>Paranid</span>: Fast recharge<br>"
-                
+
                 shield_text += f"<br>"
                 
                 # Tactical loadout recommendations based on hull strength
@@ -1741,10 +1951,22 @@ class ShipStatsApp(QMainWindow):
                     efficiency_rating = "<span style='color: #dc3545;'>Poor</span> - Sluggish acceleration"
                 
                 engine_text += f"<b>Efficiency Rating:</b> {efficiency_rating}<br><br>"
+                
+                # Calculate estimated speeds (X4 physics approximations)
+                travel_speed = self.estimate_travel_speed(travel_thrust, mass, engine_connections)
+                max_speed = self.estimate_max_speed(forward_thrust, mass, engine_connections)
+                boost_speed = self.estimate_boost_speed(boost_thrust, mass, engine_connections)
+                
+                engine_text += f"<b>Speed Performance Metrics:</b><br>"
+                engine_text += self.create_speed_performance_bars(travel_speed, max_speed, boost_speed)
+                
+                # Performance comparison rating
+                performance_rating = self.calculate_engine_performance_rating(thrust_to_weight, travel_speed, max_speed)
+                engine_text += f"<br><b>Overall Performance:</b> {performance_rating}<br>"
+                
             else:
                 engine_text += f"<b>Thrust-to-Weight Ratio:</b> Unable to calculate<br><br>"
-            
-            engine_text += f"<i>Advanced engine metrics will be enhanced in future updates</i>"
+                engine_text += f"<b>Performance Analysis:</b> Insufficient data for calculation<br>"
             
             engine_stats_label.setText(engine_text)
 
@@ -1934,6 +2156,1073 @@ class ShipStatsApp(QMainWindow):
                 rating_text += f"• General purpose missions<br>• Flexible deployment<br>• Mixed fleet operations"
             
             rating_stats_label.setText(rating_text)
+
+    def update_comparison_display(self):
+        """Update the main comparison display when ship selection changes."""
+        ship_name = self.comparison_ship_dropdown.currentText()
+        
+        if ship_name == "None" or not ship_name:
+            self.comparison_ship_stats_label.setText("Select a ship to view detailed statistics")
+            self.comparison_weapons_label.setText("Select a ship to view weapon statistics")
+            return
+        
+        # Get ship data
+        macro_name = self.comparison_ship_mapping.get(ship_name, ship_name)
+        matched = self.ships_df[self.ships_df["macro_name"] == macro_name]
+        
+        if matched.empty:
+            self.comparison_ship_stats_label.setText("Ship data not found")
+            self.comparison_weapons_label.setText("Ship data not found")
+            return
+        
+        ship_row = matched.iloc[0]
+        
+        # Update ship stats display
+        self.update_ship_stats_display(ship_row)
+        
+        # Update weapons display  
+        self.update_weapons_display(ship_row)
+        
+        # Update component dropdowns based on ship compatibility
+        self.update_component_dropdowns(ship_row)
+    
+    def update_ship_stats_display(self, ship_row):
+        """Update the ship statistics section with comprehensive data."""
+        # Get basic ship info
+        display_name = ship_row.get('display_name', '') or ship_row.get('macro_name', 'Unknown')
+        ship_type = (ship_row.get('ship_type') or 'Unknown').capitalize()
+        maker_race_raw = ship_row.get('maker_race', 'Unknown')
+        maker_race = str(maker_race_raw).capitalize() if maker_race_raw is not None else 'Unknown'
+        
+        # Ship statistics as requested
+        hull = ship_row.get('hull_max', 'N/A')
+        shield_connections = ship_row.get('shield_connections', 0)
+        mass = ship_row.get('mass', 'N/A')
+        
+        # Flight performance data
+        drag_forward = ship_row.get('drag (forward)', 'N/A')
+        drag_reverse = ship_row.get('drag (reverse)', 'N/A')
+        
+        # Build comprehensive stats display
+        stats_html = f"""
+        <div style='color: white; font-family: Arial, sans-serif;'>
+            <h2 style='color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;'>
+                {display_name}
+            </h2>
+            
+            <h3 style='color: #2196F3; margin-top: 20px;'>Ship Information</h3>
+            {self.create_ship_info_bars(ship_row)}
+            <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Type:</td><td style='padding: 3px 10px; color: #4CAF50; font-weight: bold;'>{ship_type}</td></tr>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Faction:</td><td style='padding: 3px 10px; color: #2196F3; font-weight: bold;'>{maker_race}</td></tr>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Mass:</td><td style='padding: 3px 10px; color: #FF9800; font-weight: bold;'>{mass}</td></tr>
+            </table>
+            
+            <h3 style='color: #2196F3; margin-top: 20px;'>Defensive Systems</h3>
+            {self.create_defensive_stats_bars(hull, shield_connections)}
+            <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Hull Integrity:</td><td style='padding: 3px 10px; color: #4CAF50; font-weight: bold;'>{hull}</td></tr>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Shield Hardpoints:</td><td style='padding: 3px 10px; color: #2196F3; font-weight: bold;'>{shield_connections}</td></tr>
+            </table>
+            
+            <h3 style='color: #2196F3; margin-top: 20px;'>Flight Performance</h3>
+            <table style='width: 100%; border-collapse: collapse;'>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Forward Drag:</td><td style='padding: 3px 10px;'>{drag_forward}</td></tr>
+                <tr><td style='padding: 3px 10px; color: #BBB;'>Reverse Drag:</td><td style='padding: 3px 10px;'>{drag_reverse}</td></tr>
+            </table>
+            
+            <p style='color: #888; font-size: 10px; margin-top: 20px;'>
+                Note: Additional flight performance data will be calculated when engine is selected.
+            </p>
+        </div>
+        """
+        
+        self.comparison_ship_stats_label.setText(stats_html)
+    
+    def update_weapons_display(self, ship_row):
+        """Update the weapons statistics section."""
+        # Get selected weapons and turrets
+        selected_weapons = []
+        selected_turrets = []
+        
+        # Get selected weapons
+        weapon1_text = self.comparison_weapons_dropdown.currentText()
+        if weapon1_text and weapon1_text != "None":
+            selected_weapons.append(weapon1_text)
+        
+        weapon2_text = self.comparison_weapons_dropdown_2.currentText()
+        if weapon2_text and weapon2_text != "None":
+            selected_weapons.append(weapon2_text)
+        
+        # Get selected turrets
+        for turret_dropdown in [self.comparison_turret_dropdown_1, self.comparison_turret_dropdown_2, self.comparison_turret_dropdown_3]:
+            turret_text = turret_dropdown.currentText()
+            if turret_text and turret_text != "None":
+                selected_turrets.append(turret_text)
+        
+        weapons_html = f"""
+        <div style='color: white; font-family: Arial, sans-serif;'>
+            <h2 style='color: #FF9800; border-bottom: 2px solid #FF9800; padding-bottom: 5px;'>
+                Weapons & Combat
+            </h2>
+            
+            <h3 style='color: #F44336; margin-top: 20px;'>Primary Weapons</h3>
+        """
+        
+        if selected_weapons:
+            for i, weapon in enumerate(selected_weapons, 1):
+                weapons_html += f"<p style='color: #4CAF50;'>Slot {i}: {weapon}</p>"
+        else:
+            weapons_html += "<p style='color: #BBB;'>No weapons selected</p>"
+        
+        weapons_html += "<h3 style='color: #F44336; margin-top: 20px;'>Turrets</h3>"
+        
+        if selected_turrets:
+            for i, turret in enumerate(selected_turrets, 1):
+                weapons_html += f"<p style='color: #4CAF50;'>Turret {i}: {turret}</p>"
+        else:
+            weapons_html += "<p style='color: #BBB;'>No turrets selected</p>"
+        
+        # Calculate performance metrics
+        combat_stats = self.calculate_combat_performance(ship_row, selected_weapons, selected_turrets)
+        
+        # Display performance based on available data
+        if combat_stats['has_performance_data']:
+            weapons_html += f"""
+                <h3 style='color: #2196F3; margin-top: 20px;'>Combat Performance</h3>
+                <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Total DPS:</td><td style='padding: 3px 10px; color: #4CAF50;'>{combat_stats['total_dps']:.1f}</td></tr>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Max Range:</td><td style='padding: 3px 10px; color: #2196F3;'>{combat_stats['max_range']:.0f}m</td></tr>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Weapon Count:</td><td style='padding: 3px 10px;'>{combat_stats['weapon_count']}</td></tr>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Turret Count:</td><td style='padding: 3px 10px;'>{combat_stats['turret_count']}</td></tr>
+                </table>
+            """
+        else:
+            weapons_html += f"""
+                <h3 style='color: #2196F3; margin-top: 20px;'>Combat Overview</h3>
+                <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Weapon Count:</td><td style='padding: 3px 10px; color: #4CAF50;'>{combat_stats['weapon_count']}</td></tr>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Turret Count:</td><td style='padding: 3px 10px; color: #2196F3;'>{combat_stats['turret_count']}</td></tr>
+                    <tr><td style='padding: 3px 10px; color: #BBB;'>Total Hardpoints:</td><td style='padding: 3px 10px;'>{combat_stats['weapon_count'] + combat_stats['turret_count']}</td></tr>
+                </table>
+                <p style='color: #FFC107; font-size: 11px; margin-top: 10px;'>
+                    ⚠️ Detailed DPS calculations require enhanced weapon data
+                </p>
+            """
+            
+        weapons_html += f"""
+            <h3 style='color: #2196F3; margin-top: 20px;'>Combat Rating</h3>
+            <div style='background: #333; padding: 10px; border-radius: 5px; margin-top: 10px;'>
+                <div style='color: {combat_stats['rating_color']}; font-size: 16px; font-weight: bold; margin-bottom: 8px;'>
+                    {combat_stats['rating_text']} ({combat_stats['rating_score']}/100)
+                </div>
+                
+                <!-- Enhanced Visual Progress Bar -->
+                <div style='position: relative; width: 100%; background: #555; height: 24px; border-radius: 12px; overflow: hidden; border: 2px solid #444;'>
+                    <!-- Gradient Background -->
+                    <div style='position: absolute; width: 100%; height: 100%; background: linear-gradient(90deg, #F44336 0%, #FF5722 25%, #FFC107 50%, #FF9800 75%, #4CAF50 100%); opacity: 0.3;'></div>
+                    
+                    <!-- Progress Fill with Animation Effect -->
+                    <div style='position: absolute; width: {combat_stats['rating_score']}%; height: 100%; background: {combat_stats['rating_color']}; border-radius: 10px; 
+                                box-shadow: 0 0 10px rgba(255,255,255,0.25), inset 0 2px 4px rgba(255,255,255,0.2); 
+                                transition: width 0.8s ease-in-out;'></div>
+                    
+                    <!-- Percentage Text Overlay -->
+                    <div style='position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px black;'>
+                        {combat_stats['rating_score']}%
+                    </div>
+                    
+                    <!-- Scale Markers -->
+                    <div style='position: absolute; top: -5px; left: 25%; width: 1px; height: 8px; background: #666;'></div>
+                    <div style='position: absolute; top: -5px; left: 50%; width: 1px; height: 8px; background: #666;'></div>
+                    <div style='position: absolute; top: -5px; left: 75%; width: 1px; height: 8px; background: #666;'></div>
+                </div>
+                
+                <!-- Rating Scale Labels -->
+                <div style='display: flex; justify-content: space-between; margin-top: 5px; font-size: 9px; color: #888;'>
+                    <span>Poor</span>
+                    <span>Average</span>
+                    <span>Good</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <p style='color: #888; font-size: 10px; margin-top: 20px;'>
+                {"Performance calculated from detailed weapon stats" if combat_stats['has_performance_data'] else "Rating based on weapon count and configuration"}
+            </p>
+        </div>
+        """
+        
+        self.comparison_weapons_label.setText(weapons_html)
+    
+    def update_component_dropdowns(self, ship_row):
+        """Update engine, shield, weapon and turret dropdowns based on selected ship compatibility."""
+        # Get ship info for compatibility
+        macro_name = ship_row.get('macro_name', '')
+        maker_race = ship_row.get('maker_race', 'unknown')
+        ship_size = self.extract_size_class(macro_name) or 'unknown'
+        
+        # Update engine dropdown
+        self.populate_engine_dropdown(self.comparison_engine_dropdown, ship_size, maker_race)
+        
+        # Update shield dropdown  
+        self.populate_shield_dropdown(self.comparison_shield_dropdown, ship_size, maker_race)
+        
+        # Update weapons dropdowns
+        self.populate_weapons_dropdown(self.comparison_weapons_dropdown, ship_size, maker_race)
+        self.populate_weapons_dropdown(self.comparison_weapons_dropdown_2, ship_size, maker_race)
+        
+        # Update turret dropdowns
+        self.populate_turrets_dropdown(self.comparison_turret_dropdown_1, ship_size, maker_race)
+        self.populate_turrets_dropdown(self.comparison_turret_dropdown_2, ship_size, maker_race)
+        self.populate_turrets_dropdown(self.comparison_turret_dropdown_3, ship_size, maker_race)
+    
+    def filter_ships_by_size(self):
+        """Filter ship dropdown based on selected size."""
+        size_filter = self.comparison_size_filter.currentText()
+        self.apply_ship_filters()
+    
+    def filter_ships_by_type(self):
+        """Filter ship dropdown based on selected type."""
+        type_filter = self.comparison_type_filter.currentText()
+        self.apply_ship_filters()
+    
+    def apply_ship_filters(self):
+        """Apply size and type filters to ship dropdown."""
+        size_filter = self.comparison_size_filter.currentText()
+        type_filter = self.comparison_type_filter.currentText()
+        
+        # Start with all ships
+        filtered_ships = self.ships_df.copy()
+        
+        # Apply size filter
+        if size_filter != "All Sizes":
+            # Extract size from macro_name (assuming format like ship_xxx_SIZE_xxx)
+            filtered_ships = filtered_ships[
+                filtered_ships['macro_name'].str.contains(f'_{size_filter.lower()}_', na=False)
+            ]
+        
+        # Apply type filter
+        if type_filter != "All Types":
+            filtered_ships = filtered_ships[
+                filtered_ships['ship_type'].str.contains(type_filter, case=False, na=False)
+            ]
+        
+        # Update ship dropdown
+        self.comparison_ship_dropdown.blockSignals(True)
+        current_ship = self.comparison_ship_dropdown.currentText()
+        self.comparison_ship_dropdown.clear()
+        
+        ship_items = ["None"]
+        ship_name_mapping = {}
+        
+        for _, row in filtered_ships.iterrows():
+            display_name = row.get('display_name', '')
+            macro_name = row.get('macro_name', 'Unknown')
+            name_ref = row.get('name_ref', '')
+            
+            if display_name and display_name != macro_name and not display_name.startswith("Text Ref:"):
+                clean_name = display_name
+            elif name_ref:
+                clean_name = f"Text Ref: {name_ref}"
+            else:
+                clean_name = macro_name
+            
+            ship_items.append(clean_name)
+            ship_name_mapping[clean_name] = macro_name
+        
+        self.comparison_ship_dropdown.addItems(ship_items)
+        self.comparison_ship_mapping = ship_name_mapping
+        
+        # Try to restore previous selection
+        index = self.comparison_ship_dropdown.findText(current_ship)
+        if index >= 0:
+            self.comparison_ship_dropdown.setCurrentIndex(index)
+        else:
+            self.comparison_ship_dropdown.setCurrentIndex(0)
+        
+        self.comparison_ship_dropdown.blockSignals(False)
+        
+        # Update display
+        self.update_comparison_display()
+    
+    def populate_weapons_dropdown(self, dropdown, ship_size=None, selected_faction=None):
+        """Populate weapons dropdown with compatible weapons."""
+        dropdown.blockSignals(True)
+        current_selection = dropdown.currentText()
+        dropdown.clear()
+        
+        weapon_items = ["None"]
+        weapon_mapping = {}  # Map formatted names to weapon data
+        
+        if not self.weapons_df.empty:
+            # Filter weapons based on compatibility
+            filtered_weapons = self.weapons_df.copy()
+            
+            # Advanced size compatibility filtering
+            if ship_size:
+                compatible_sizes = self.get_compatible_weapon_sizes(ship_size)
+                filtered_weapons = filtered_weapons[filtered_weapons['size_class'].isin(compatible_sizes)]
+            
+            # Faction preference filtering (but don't exclude other factions entirely)
+            if selected_faction and selected_faction.lower() != 'unknown':
+                # Sort so faction weapons appear first, but include others
+                filtered_weapons['faction_priority'] = filtered_weapons['faction'].apply(
+                    lambda x: 0 if x.lower() == selected_faction.lower() else 1
+                )
+                filtered_weapons = filtered_weapons.sort_values(['faction_priority', 'faction', 'weapon_type', 'mk_level'])
+            else:
+                # Sort by faction, type, mk level
+                filtered_weapons = filtered_weapons.sort_values(['faction', 'weapon_type', 'mk_level'])
+            
+            for _, row in filtered_weapons.iterrows():
+                weapon_id = row.get('weapon_id', '')
+                display_name = row.get('display_name', weapon_id)
+                weapon_type = row.get('weapon_type', 'unknown')
+                faction = row.get('faction', 'unknown').capitalize()
+                mk_level = row.get('mk_level', 1)
+                size_class = row.get('size_class', 'unknown').upper()
+                
+                # Create formatted name with size indicator
+                type_display = weapon_type.replace('_', ' ').title()
+                if display_name and display_name != weapon_id and not display_name.startswith('('):
+                    # Clean display name by removing reference markers
+                    clean_name = display_name.split('{')[0].strip()
+                    if clean_name.startswith('(') and ')' in clean_name:
+                        clean_name = clean_name.split(')', 1)[1].strip()
+                    formatted_name = f"[{size_class}] {clean_name} - {faction} {type_display} Mk{mk_level}"
+                else:
+                    formatted_name = f"[{size_class}] {weapon_id} - {faction} {type_display} Mk{mk_level}"
+                
+                weapon_items.append(formatted_name)
+                weapon_mapping[formatted_name] = row.to_dict()
+        
+        dropdown.addItems(weapon_items)
+        
+        # Store mapping for later use
+        dropdown.weapon_mapping = weapon_mapping
+        
+        # Try to restore previous selection
+        index = dropdown.findText(current_selection)
+        if index >= 0:
+            dropdown.setCurrentIndex(index)
+        
+        dropdown.blockSignals(False)
+    
+    def get_compatible_weapon_sizes(self, ship_size):
+        """Get list of weapon sizes compatible with ship size."""
+        ship_size_lower = ship_size.lower()
+        
+        # X4 weapon compatibility rules
+        if ship_size_lower in ["s", "small"]:
+            return ["small"]
+        elif ship_size_lower in ["m", "medium"]:
+            return ["small", "medium"]
+        elif ship_size_lower in ["l", "large"]:
+            return ["small", "medium", "large"]
+        elif ship_size_lower in ["xl", "extra_large"]:
+            return ["small", "medium", "large", "extra_large"]
+        else:
+            # Unknown size, allow all
+            return ["small", "medium", "large", "extra_large"]
+    
+    def get_compatible_turret_sizes(self, ship_size):
+        """Get list of turret sizes compatible with ship size."""
+        ship_size_lower = ship_size.lower()
+        
+        # X4 turret compatibility rules (typically more restricted than weapons)
+        if ship_size_lower in ["s", "small"]:
+            return ["small"]
+        elif ship_size_lower in ["m", "medium"]:
+            return ["small", "medium"]
+        elif ship_size_lower in ["l", "large"]:
+            return ["medium", "large"]  # Large ships typically don't use small turrets
+        elif ship_size_lower in ["xl", "extra_large"]:
+            return ["large", "extra_large"]  # XL ships use only large+ turrets
+        else:
+            # Unknown size, allow all
+            return ["small", "medium", "large", "extra_large"]
+    
+    def populate_turrets_dropdown(self, dropdown, ship_size=None, selected_faction=None):
+        """Populate turrets dropdown with compatible turrets."""
+        dropdown.blockSignals(True)
+        current_selection = dropdown.currentText()
+        dropdown.clear()
+        
+        turret_items = ["None"]
+        turret_mapping = {}  # Map formatted names to turret data
+        
+        if not self.turrets_df.empty:
+            # Filter turrets based on compatibility
+            filtered_turrets = self.turrets_df.copy()
+            
+            # Advanced size compatibility filtering
+            if ship_size:
+                compatible_sizes = self.get_compatible_turret_sizes(ship_size)
+                filtered_turrets = filtered_turrets[filtered_turrets['size_class'].isin(compatible_sizes)]
+            
+            # Faction preference filtering (but don't exclude other factions entirely)
+            if selected_faction and selected_faction.lower() != 'unknown':
+                # Sort so faction turrets appear first, but include others
+                filtered_turrets['faction_priority'] = filtered_turrets['faction'].apply(
+                    lambda x: 0 if x.lower() == selected_faction.lower() else 1
+                )
+                filtered_turrets = filtered_turrets.sort_values(['faction_priority', 'faction', 'turret_type', 'mk_level'])
+            else:
+                # Sort by faction, type, mk level
+                filtered_turrets = filtered_turrets.sort_values(['faction', 'turret_type', 'mk_level'])
+            
+            for _, row in filtered_turrets.iterrows():
+                turret_id = row.get('turret_id', '')
+                display_name = row.get('display_name', turret_id)
+                turret_type = row.get('turret_type', 'unknown')
+                faction = row.get('faction', 'unknown').capitalize()
+                mk_level = row.get('mk_level', 1)
+                size_class = row.get('size_class', 'unknown').upper()
+                
+                # Create formatted name with size indicator
+                type_display = turret_type.replace('_', ' ').title()
+                if display_name and display_name != turret_id and not display_name.startswith('('):
+                    # Clean display name by removing reference markers
+                    clean_name = display_name.split('{')[0].strip()
+                    if clean_name.startswith('(') and ')' in clean_name:
+                        clean_name = clean_name.split(')', 1)[1].strip()
+                    formatted_name = f"[{size_class}] {clean_name} - {faction} {type_display} Mk{mk_level}"
+                else:
+                    formatted_name = f"[{size_class}] {turret_id} - {faction} {type_display} Mk{mk_level}"
+                
+                turret_items.append(formatted_name)
+                turret_mapping[formatted_name] = row.to_dict()
+        
+        dropdown.addItems(turret_items)
+        
+        # Store mapping for later use
+        dropdown.turret_mapping = turret_mapping
+        
+        # Try to restore previous selection
+        index = dropdown.findText(current_selection)
+        if index >= 0:
+            dropdown.setCurrentIndex(index)
+        
+        dropdown.blockSignals(False)
+    
+    def populate_engine_dropdown(self, dropdown, ship_size=None, selected_faction=None):
+        """Populate engine dropdown with compatible engines."""
+        dropdown.blockSignals(True)
+        current_selection = dropdown.currentText()
+        dropdown.clear()
+        
+        engine_items = ["None"]
+        engine_mapping = {}  # Map formatted names to engine data
+        
+        if hasattr(self, 'engines_df') and not self.engines_df.empty:
+            # Filter engines based on compatibility
+            filtered_engines = self.engines_df.copy()
+            
+            # Size-based filtering - engines should match ship size
+            if ship_size:
+                size_lower = ship_size.lower()
+                if size_lower in ['s', 'small']:
+                    # Small ships use small engines only
+                    filtered_engines = filtered_engines[
+                        filtered_engines['name'].str.contains('_s_', case=False, na=False)
+                    ]
+                elif size_lower in ['m', 'medium']:
+                    # Medium ships use medium engines only
+                    filtered_engines = filtered_engines[
+                        filtered_engines['name'].str.contains('_m_', case=False, na=False)
+                    ]
+                elif size_lower in ['l', 'large']:
+                    # Large ships use large engines only
+                    filtered_engines = filtered_engines[
+                        filtered_engines['name'].str.contains('_l_', case=False, na=False)
+                    ]
+                elif size_lower in ['xl', 'extra_large']:
+                    # XL ships use XL engines only
+                    filtered_engines = filtered_engines[
+                        filtered_engines['name'].str.contains('_xl_', case=False, na=False)
+                    ]
+            
+            # Faction preference filtering (but don't exclude other factions entirely)
+            if selected_faction and selected_faction.lower() != 'unknown':
+                # Sort so faction engines appear first, but include others
+                filtered_engines['faction_priority'] = filtered_engines['maker_race'].apply(
+                    lambda x: 0 if x is not None and str(x).lower() == selected_faction.lower() else 1
+                )
+                filtered_engines = filtered_engines.sort_values(['faction_priority', 'maker_race', 'mk'])
+            else:
+                # Sort by faction and mk level
+                filtered_engines = filtered_engines.sort_values(['maker_race', 'mk'])
+            
+            for _, row in filtered_engines.iterrows():
+                engine_id = row.get('name', '')  # Use 'name' instead of 'macro_name'
+                display_name = row.get('display_name', engine_id)
+                mk_level = row.get('mk', 1)
+                faction_raw = row.get('maker_race', 'unknown')
+                faction = str(faction_raw).capitalize() if faction_raw is not None else 'Unknown'
+                
+                # Extract engine size from the engine name
+                size_indicator = ""
+                if '_s_' in engine_id.lower():
+                    size_indicator = "[S] "
+                elif '_m_' in engine_id.lower():
+                    size_indicator = "[M] "
+                elif '_l_' in engine_id.lower():
+                    size_indicator = "[L] "
+                elif '_xl_' in engine_id.lower():
+                    size_indicator = "[XL] "
+                
+                # Create formatted name
+                if display_name and display_name != engine_id and not display_name.startswith('('):
+                    # Clean display name by removing reference markers
+                    clean_name = display_name.split('{')[0].strip()
+                    if clean_name.startswith('(') and ')' in clean_name:
+                        clean_name = clean_name.split(')', 1)[1].strip()
+                    formatted_name = f"{size_indicator}{clean_name} Mk{mk_level} - {faction}"
+                else:
+                    formatted_name = f"{size_indicator}{engine_id} Mk{mk_level} - {faction}"
+                
+                engine_items.append(formatted_name)
+                engine_mapping[formatted_name] = row.to_dict()
+        
+        dropdown.addItems(engine_items)
+        
+        # Store mapping for later use
+        dropdown.engine_mapping = engine_mapping
+        
+        # Try to restore previous selection
+        index = dropdown.findText(current_selection)
+        if index >= 0:
+            dropdown.setCurrentIndex(index)
+        
+        dropdown.blockSignals(False)
+    
+    def populate_shield_dropdown(self, dropdown, ship_size=None, selected_faction=None):
+        """Populate shield dropdown with compatible shields."""
+        dropdown.blockSignals(True)
+        current_selection = dropdown.currentText()
+        dropdown.clear()
+        
+        shield_items = ["None"]
+        shield_mapping = {}  # Map formatted names to shield data
+        
+        if hasattr(self, 'shields_df') and not self.shields_df.empty:
+            # Filter shields based on compatibility
+            filtered_shields = self.shields_df.copy()
+            
+            # Size-based filtering (shields have size compatibility)
+            if ship_size:
+                size_lower = ship_size.lower()
+                if size_lower in ['s', 'small']:
+                    # Small ships use small/medium shields
+                    filtered_shields = filtered_shields[
+                        filtered_shields['shield_size'].isin(['s', 'm'])
+                    ]
+                elif size_lower in ['m', 'medium']:
+                    # Medium ships use small/medium/large shields
+                    filtered_shields = filtered_shields[
+                        filtered_shields['shield_size'].isin(['s', 'm', 'l'])
+                    ]
+                elif size_lower in ['l', 'large']:
+                    # Large ships use medium/large/xl shields
+                    filtered_shields = filtered_shields[
+                        filtered_shields['shield_size'].isin(['m', 'l', 'xl'])
+                    ]
+                elif size_lower in ['xl', 'extra_large']:
+                    # XL ships use large/xl shields
+                    filtered_shields = filtered_shields[
+                        filtered_shields['shield_size'].isin(['l', 'xl'])
+                    ]
+            
+            # Faction preference filtering
+            if selected_faction and selected_faction.lower() != 'unknown':
+                # Sort so faction shields appear first, but include others
+                filtered_shields['faction_priority'] = filtered_shields['maker_race'].apply(
+                    lambda x: 0 if x is not None and str(x).lower() == selected_faction.lower() else 1
+                )
+                filtered_shields = filtered_shields.sort_values(['faction_priority', 'maker_race', 'mk'])
+            else:
+                # Sort by faction and mk level
+                filtered_shields = filtered_shields.sort_values(['maker_race', 'mk'])
+            
+            for _, row in filtered_shields.iterrows():
+                shield_id = row.get('name', '')  # Use 'name' instead of 'macro_name'
+                display_name = row.get('display_name', shield_id)
+                shield_size = row.get('shield_size', 'unknown')
+                mk_level = row.get('mk', 1)
+                faction_raw = row.get('maker_race', 'unknown')
+                faction = str(faction_raw).capitalize() if faction_raw is not None else 'Unknown'
+                
+                # Create size indicator from shield_size
+                size_indicator = f"[{shield_size.upper()}] " if shield_size != 'unknown' else ""
+                
+                # Create formatted name
+                if display_name and display_name != shield_id and not display_name.startswith('('):
+                    # Clean display name by removing reference markers
+                    clean_name = display_name.split('{')[0].strip()
+                    if clean_name.startswith('(') and ')' in clean_name:
+                        clean_name = clean_name.split(')', 1)[1].strip()
+                    formatted_name = f"{size_indicator}{clean_name} Mk{mk_level} - {faction}"
+                else:
+                    formatted_name = f"{size_indicator}{shield_id} Mk{mk_level} - {faction}"
+                
+                shield_items.append(formatted_name)
+                shield_mapping[formatted_name] = row.to_dict()
+        
+        dropdown.addItems(shield_items)
+        
+        # Store mapping for later use
+        dropdown.shield_mapping = shield_mapping
+        
+        # Try to restore previous selection
+        index = dropdown.findText(current_selection)
+        if index >= 0:
+            dropdown.setCurrentIndex(index)
+        
+        dropdown.blockSignals(False)
+    
+    def calculate_combat_performance(self, ship_row, selected_weapons, selected_turrets):
+        """Calculate comprehensive combat performance metrics"""
+        
+        # Initialize stats
+        total_dps = 0.0
+        max_range = 0.0
+        weapon_count = 0
+        turret_count = 0
+        has_performance_data = False
+        
+        # Calculate weapon DPS
+        if selected_weapons:
+            for weapon_id in selected_weapons:
+                weapon_data = self.weapons_df[self.weapons_df['weapon_id'] == weapon_id]
+                if not weapon_data.empty:
+                    weapon_row = weapon_data.iloc[0]
+                    weapon_count += 1
+                    
+                    # Check if we have performance data columns
+                    if 'damage' in weapon_row or 'hull_damage' in weapon_row or 'shield_damage' in weapon_row:
+                        has_performance_data = True
+                        # Get weapon stats
+                        damage = weapon_row.get('damage', 0)
+                        hull_damage = weapon_row.get('hull_damage', 0)
+                        shield_damage = weapon_row.get('shield_damage', 0)
+                        reload_time = weapon_row.get('reload_time', 1.0)
+                        range_val = weapon_row.get('range', 0)
+                        
+                        # Calculate effective damage (prefer specific damage types)
+                        effective_damage = max(damage or 0, hull_damage or 0, shield_damage or 0)
+                        
+                        # Calculate DPS (damage per second)
+                        if reload_time > 0:
+                            weapon_dps = effective_damage / reload_time
+                            total_dps += weapon_dps
+                        
+                        # Track max range
+                        if range_val > max_range:
+                            max_range = range_val
+        
+        # Calculate turret DPS
+        if selected_turrets:
+            for turret_id in selected_turrets:
+                turret_data = self.turrets_df[self.turrets_df['turret_id'] == turret_id]
+                if not turret_data.empty:
+                    turret_row = turret_data.iloc[0]
+                    turret_count += 1
+                    
+                    # Check if we have performance data columns
+                    if 'damage' in turret_row or 'hull_damage' in turret_row or 'shield_damage' in turret_row:
+                        has_performance_data = True
+                        # Get turret stats (turrets may have multiple weapons)
+                        damage = turret_row.get('damage', 0)
+                        hull_damage = turret_row.get('hull_damage', 0)
+                        shield_damage = turret_row.get('shield_damage', 0)
+                        reload_time = turret_row.get('reload_time', 1.0)
+                        range_val = turret_row.get('range', 0)
+                        
+                        # Calculate effective damage
+                        effective_damage = max(damage or 0, hull_damage or 0, shield_damage or 0)
+                        
+                        # Calculate DPS
+                        if reload_time > 0:
+                            turret_dps = effective_damage / reload_time
+                            total_dps += turret_dps
+                        
+                        # Track max range
+                        if range_val > max_range:
+                            max_range = range_val
+        
+        # If we don't have performance data, provide a basic rating based on count only
+        if not has_performance_data:
+            # Simple rating based on weapon/turret count and types
+            total_count = weapon_count + turret_count
+            if total_count >= 10:
+                rating_score = 75
+                rating_color = '#4CAF50'
+                rating_text = 'Well Armed'
+            elif total_count >= 5:
+                rating_score = 60
+                rating_color = '#FF9800'
+                rating_text = 'Moderately Armed'
+            elif total_count >= 2:
+                rating_score = 40
+                rating_color = '#FFC107'
+                rating_text = 'Lightly Armed'
+            else:
+                rating_score = 20
+                rating_color = '#F44336'
+                rating_text = 'Minimal Armament'
+        else:
+            # Calculate combat rating (0-100 scale)
+            # Base rating on total DPS with modifiers for range and count
+            base_rating = min(total_dps / 50.0, 50)  # Up to 50 points for DPS
+            range_bonus = min(max_range / 20000.0 * 25, 25)  # Up to 25 points for range
+            count_bonus = min((weapon_count + turret_count) / 20.0 * 25, 25)  # Up to 25 points for weapon count
+            
+            rating_score = int(base_rating + range_bonus + count_bonus)
+            
+            # Determine rating color and text
+            if rating_score >= 80:
+                rating_color = '#4CAF50'  # Green
+                rating_text = 'Excellent'
+            elif rating_score >= 60:
+                rating_color = '#FF9800'  # Orange
+                rating_text = 'Good'
+            elif rating_score >= 40:
+                rating_color = '#FFC107'  # Yellow
+                rating_text = 'Average'
+            elif rating_score >= 20:
+                rating_color = '#FF5722'  # Red-Orange
+                rating_text = 'Poor'
+            else:
+                rating_color = '#F44336'  # Red
+                rating_text = 'Very Poor'
+        
+        return {
+            'total_dps': total_dps,
+            'max_range': max_range,
+            'weapon_count': weapon_count,
+            'turret_count': turret_count,
+            'rating_score': rating_score,
+            'rating_color': rating_color,
+            'rating_text': rating_text,
+            'has_performance_data': has_performance_data
+        }
+    
+    def estimate_travel_speed(self, travel_thrust, mass, engine_connections):
+        """Estimate travel speed based on X4 physics approximations"""
+        if not all(isinstance(x, (int, float)) and x > 0 for x in [travel_thrust, mass, engine_connections]):
+            return 0.0
+        
+        # X4 physics approximation: travel speed = sqrt(total_travel_thrust / mass) * factor
+        total_travel_thrust = travel_thrust * engine_connections
+        speed_factor = 15.0  # Approximate X4 travel speed conversion factor
+        return (total_travel_thrust / mass) ** 0.5 * speed_factor
+    
+    def estimate_max_speed(self, forward_thrust, mass, engine_connections):
+        """Estimate maximum forward speed"""
+        if not all(isinstance(x, (int, float)) and x > 0 for x in [forward_thrust, mass, engine_connections]):
+            return 0.0
+        
+        # X4 physics approximation: max speed = sqrt(total_forward_thrust / mass) * factor
+        total_forward_thrust = forward_thrust * engine_connections
+        speed_factor = 12.0  # Forward speed is typically lower than travel
+        return (total_forward_thrust / mass) ** 0.5 * speed_factor
+    
+    def estimate_boost_speed(self, boost_thrust, mass, engine_connections):
+        """Estimate boost speed"""
+        if not all(isinstance(x, (int, float)) and x > 0 for x in [boost_thrust, mass, engine_connections]):
+            return 0.0
+        
+        # X4 physics approximation: boost speed = sqrt(total_boost_thrust / mass) * factor
+        total_boost_thrust = boost_thrust * engine_connections
+        speed_factor = 18.0  # Boost speed is typically highest
+        return (total_boost_thrust / mass) ** 0.5 * speed_factor
+    
+    def calculate_engine_performance_rating(self, thrust_to_weight, travel_speed, max_speed):
+        """Calculate overall engine performance rating"""
+        # Base rating on thrust-to-weight ratio
+        if thrust_to_weight >= 15:
+            twr_score = 40
+            twr_color = '#4CAF50'
+        elif thrust_to_weight >= 10:
+            twr_score = 30
+            twr_color = '#FF9800'
+        elif thrust_to_weight >= 5:
+            twr_score = 20
+            twr_color = '#FFC107'
+        else:
+            twr_score = 10
+            twr_color = '#F44336'
+        
+        # Speed rating (combine travel and max speed)
+        combined_speed = (travel_speed + max_speed) / 2
+        if combined_speed >= 200:
+            speed_score = 30
+        elif combined_speed >= 150:
+            speed_score = 25
+        elif combined_speed >= 100:
+            speed_score = 20
+        elif combined_speed >= 50:
+            speed_score = 15
+        else:
+            speed_score = 10
+        
+        # Overall rating (0-70 scale, converted to percentage)
+        total_score = min(twr_score + speed_score, 70)
+        percentage = int((total_score / 70) * 100)
+        
+        # Determine rating text and color
+        if percentage >= 80:
+            return f"<span style='color: #4CAF50;'>Excellent</span> ({percentage}%)"
+        elif percentage >= 60:
+            return f"<span style='color: #FF9800;'>Good</span> ({percentage}%)"
+        elif percentage >= 40:
+            return f"<span style='color: #FFC107;'>Average</span> ({percentage}%)"
+        else:
+            return f"<span style='color: #F44336;'>Poor</span> ({percentage}%)"
+    
+    def create_speed_performance_bars(self, travel_speed, max_speed, boost_speed):
+        """Create visual speed performance bars with comparative metrics"""
+        
+        # Define speed benchmarks for scaling (typical X4 speeds)
+        max_benchmark = 300  # Maximum expected speed for scaling
+        
+        # Calculate percentages
+        travel_pct = min((travel_speed / max_benchmark) * 100, 100)
+        max_pct = min((max_speed / max_benchmark) * 100, 100)
+        boost_pct = min((boost_speed / max_benchmark) * 100, 100)
+        
+        # Color coding based on speed performance
+        def get_speed_color(speed):
+            if speed >= 200:
+                return '#4CAF50'  # Green - Excellent
+            elif speed >= 150:
+                return '#8BC34A'  # Light Green - Very Good
+            elif speed >= 100:
+                return '#FFC107'  # Yellow - Good
+            elif speed >= 50:
+                return '#FF9800'  # Orange - Average
+            else:
+                return '#F44336'  # Red - Poor
+        
+        travel_color = get_speed_color(travel_speed)
+        max_color = get_speed_color(max_speed)
+        boost_color = get_speed_color(boost_speed)
+        
+        bars_html = f"""
+        <div style='margin: 10px 0;'>
+            <!-- Travel Speed Bar -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Travel Speed</span>
+                    <span style='font-size: 11px; color: {travel_color}; font-weight: bold;'>{travel_speed:.0f} m/s</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 12px; border-radius: 6px; overflow: hidden;'>
+                    <div style='width: {travel_pct:.1f}%; background: {travel_color}; height: 100%; border-radius: 6px; 
+                                box-shadow: 0 0 6px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+            </div>
+            
+            <!-- Max Forward Speed Bar -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Max Forward</span>
+                    <span style='font-size: 11px; color: {max_color}; font-weight: bold;'>{max_speed:.0f} m/s</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 12px; border-radius: 6px; overflow: hidden;'>
+                    <div style='width: {max_pct:.1f}%; background: {max_color}; height: 100%; border-radius: 6px; 
+                                box-shadow: 0 0 6px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+            </div>
+            
+            <!-- Boost Speed Bar -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Boost Speed</span>
+                    <span style='font-size: 11px; color: {boost_color}; font-weight: bold;'>{boost_speed:.0f} m/s</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 12px; border-radius: 6px; overflow: hidden;'>
+                    <div style='width: {boost_pct:.1f}%; background: {boost_color}; height: 100%; border-radius: 6px; 
+                                box-shadow: 0 0 6px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+            </div>
+            
+            <!-- Performance Scale Reference -->
+            <div style='font-size: 9px; color: #666; margin-top: 8px; text-align: center;'>
+                Scale: 50 m/s (Poor) → 150 m/s (Good) → 300+ m/s (Excellent)
+            </div>
+        </div>
+        """
+        
+        return bars_html
+    
+    def create_defensive_stats_bars(self, hull, shield_connections):
+        """Create visual bars for defensive statistics"""
+        
+        # Handle hull value
+        hull_value = 0
+        if isinstance(hull, (int, float)):
+            hull_value = hull
+        elif isinstance(hull, str) and hull.replace('.', '').replace(',', '').isdigit():
+            hull_value = float(hull.replace(',', ''))
+        
+        # Handle shield connections
+        shield_value = 0
+        if isinstance(shield_connections, (int, float)):
+            shield_value = shield_connections
+        
+        # Define benchmarks for scaling
+        max_hull_benchmark = 100000  # Typical high-end hull value
+        max_shield_benchmark = 6  # Typical max shield hardpoints
+        
+        # Calculate percentages
+        hull_pct = min((hull_value / max_hull_benchmark) * 100, 100) if hull_value > 0 else 0
+        shield_pct = min((shield_value / max_shield_benchmark) * 100, 100) if shield_value > 0 else 0
+        
+        # Color coding for defensive stats
+        def get_hull_color(hull_val):
+            if hull_val >= 50000:
+                return '#4CAF50'  # Green - Excellent
+            elif hull_val >= 25000:
+                return '#8BC34A'  # Light Green - Very Good
+            elif hull_val >= 10000:
+                return '#FFC107'  # Yellow - Good
+            elif hull_val >= 5000:
+                return '#FF9800'  # Orange - Average
+            else:
+                return '#F44336'  # Red - Poor
+        
+        def get_shield_color(shield_val):
+            if shield_val >= 4:
+                return '#4CAF50'  # Green - Excellent
+            elif shield_val >= 3:
+                return '#8BC34A'  # Light Green - Very Good
+            elif shield_val >= 2:
+                return '#FFC107'  # Yellow - Good
+            elif shield_val >= 1:
+                return '#FF9800'  # Orange - Basic
+            else:
+                return '#F44336'  # Red - None
+        
+        hull_color = get_hull_color(hull_value)
+        shield_color = get_shield_color(shield_value)
+        
+        bars_html = f"""
+        <div style='margin: 10px 0;'>
+            <!-- Hull Integrity Bar -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Hull Integrity</span>
+                    <span style='font-size: 11px; color: {hull_color}; font-weight: bold;'>{hull_value:,.0f} HP</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 14px; border-radius: 7px; overflow: hidden;'>
+                    <div style='width: {hull_pct:.1f}%; background: {hull_color}; height: 100%; border-radius: 7px; 
+                                box-shadow: 0 0 8px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+            </div>
+            
+            <!-- Shield Hardpoints Bar -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Shield Capacity</span>
+                    <span style='font-size: 11px; color: {shield_color}; font-weight: bold;'>{shield_value} Hardpoint{"s" if shield_value != 1 else ""}</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 14px; border-radius: 7px; overflow: hidden;'>
+                    <div style='width: {shield_pct:.1f}%; background: {shield_color}; height: 100%; border-radius: 7px; 
+                                box-shadow: 0 0 8px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+            </div>
+            
+            <!-- Defensive Rating Scale -->
+            <div style='font-size: 9px; color: #666; margin-top: 8px; text-align: center;'>
+                Defensive Scale: Hull (5k-100k HP) • Shields (1-6 Hardpoints)
+            </div>
+        </div>
+        """
+        
+        return bars_html
+    
+    def create_ship_info_bars(self, ship_row):
+        """Create visual indicators for ship size and mass characteristics"""
+        
+        # Get ship size and mass
+        ship_size = ship_row.get('size_class', 'Unknown').upper()
+        mass = ship_row.get('mass', 0)
+        
+        # Handle mass value
+        mass_value = 0
+        if isinstance(mass, (int, float)):
+            mass_value = mass
+        elif isinstance(mass, str) and mass.replace('.', '').replace(',', '').isdigit():
+            mass_value = float(mass.replace(',', ''))
+        
+        # Size class mapping for visualization
+        size_mapping = {
+            'S': {'name': 'Small', 'percentage': 20, 'color': '#4CAF50'},
+            'M': {'name': 'Medium', 'percentage': 40, 'color': '#2196F3'},
+            'L': {'name': 'Large', 'percentage': 70, 'color': '#FF9800'},
+            'XL': {'name': 'Extra Large', 'percentage': 100, 'color': '#F44336'}
+        }
+        
+        size_info = size_mapping.get(ship_size, {'name': 'Unknown', 'percentage': 10, 'color': '#666'})
+        
+        # Mass scale (typical X4 ship masses)
+        max_mass_benchmark = 50000  # Heavy ships
+        mass_pct = min((mass_value / max_mass_benchmark) * 100, 100) if mass_value > 0 else 0
+        
+        def get_mass_color(mass_val):
+            if mass_val >= 30000:
+                return '#F44336'  # Red - Very Heavy
+            elif mass_val >= 15000:
+                return '#FF9800'  # Orange - Heavy
+            elif mass_val >= 5000:
+                return '#FFC107'  # Yellow - Medium
+            elif mass_val >= 1000:
+                return '#8BC34A'  # Light Green - Light
+            else:
+                return '#4CAF50'  # Green - Very Light
+        
+        mass_color = get_mass_color(mass_value)
+        
+        bars_html = f"""
+        <div style='margin: 10px 0;'>
+            <!-- Ship Size Class Indicator -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Size Class</span>
+                    <span style='font-size: 11px; color: {size_info["color"]}; font-weight: bold;'>{ship_size} - {size_info["name"]}</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 14px; border-radius: 7px; overflow: hidden; position: relative;'>
+                    <!-- Size scale background -->
+                    <div style='position: absolute; width: 100%; height: 100%; background: linear-gradient(90deg, #4CAF50 0%, #2196F3 33%, #FF9800 66%, #F44336 100%); opacity: 0.3;'></div>
+                    <!-- Size indicator -->
+                    <div style='width: {size_info["percentage"]}%; background: {size_info["color"]}; height: 100%; border-radius: 7px; 
+                                box-shadow: 0 0 8px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+                <div style='display: flex; justify-content: space-between; margin-top: 2px; font-size: 8px; color: #666;'>
+                    <span>Small</span>
+                    <span>Medium</span>
+                    <span>Large</span>
+                    <span>XL</span>
+                </div>
+            </div>
+            
+            <!-- Mass Indicator -->
+            <div style='margin-bottom: 8px;'>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 2px;'>
+                    <span style='font-size: 11px; color: #BBB;'>Ship Mass</span>
+                    <span style='font-size: 11px; color: {mass_color}; font-weight: bold;'>{mass_value:,.0f} kg</span>
+                </div>
+                <div style='width: 100%; background: #444; height: 14px; border-radius: 7px; overflow: hidden;'>
+                    <div style='width: {mass_pct:.1f}%; background: {mass_color}; height: 100%; border-radius: 7px; 
+                                box-shadow: 0 0 8px rgba(255,255,255,0.4); transition: width 0.6s ease;'></div>
+                </div>
+            </div>
+        </div>
+        """
+        
+        return bars_html
 
 class LanguageSelectionDialog(QDialog):
     """Dialog for selecting X4 language preference."""

@@ -75,46 +75,57 @@ def main():
     print("🔨 Building X4 ShipMatrix with Optional Updater")
     print("=" * 50)
     
-    # Check prerequisites
-    if not install_pyinstaller():
-        print("❌ Build failed: Could not install PyInstaller")
-        return 1
+    # Change to build_scripts directory
+    script_dir = Path(__file__).parent
+    original_dir = os.getcwd()
+    os.chdir(script_dir)
+    print(f"📁 Working directory: {script_dir}")
     
-    # Clean previous builds
-    clean_build_directories()
+    try:
+        # Check prerequisites
+        if not install_pyinstaller():
+            print("❌ Build failed: Could not install PyInstaller")
+            return 1
+        
+        # Clean previous builds
+        clean_build_directories()
+        
+        # Build main executable
+        if not build_main_executable():
+            print("❌ Build failed: Main executable build failed")
+            return 1
+        
+        # Build updater executable (continue even if this fails)
+        print("\n📡 Building optional updater executable...")
+        updater_success = build_updater_executable()
+        if not updater_success:
+            print("⚠️ Updater build failed - continuing without updater")
+        
+        # Show results
+        sizes = get_file_sizes()
+        print("\n🎉 Build Results:")
+        print("-" * 30)
+        for filename, size in sizes.items():
+            print(f"📦 {filename}: {size}")
+        
+        print(f"\n✅ Build completed!")
+        print(f"📁 Files available in: {Path('dist').absolute()}")
+        
+        if "X4_Updater.exe" in sizes:
+            print("\n💡 Update Options:")
+            print("   • Distribute both executables for automatic update checking")
+            print("   • Distribute only 'X4 ShipMatrix.exe' for manual updates")
+            print("   • Users can check updates via Help → Check for Updates")
+        else:
+            print("\n💡 Update Method:")
+            print("   • Manual updates only (Help → Check for Updates opens GitHub)")
+            print("   • Users download new versions from GitHub releases")
+        
+        return 0
     
-    # Build main executable
-    if not build_main_executable():
-        print("❌ Build failed: Main executable build failed")
-        return 1
-    
-    # Build updater executable (continue even if this fails)
-    print("\n📡 Building optional updater executable...")
-    updater_success = build_updater_executable()
-    if not updater_success:
-        print("⚠️ Updater build failed - continuing without updater")
-    
-    # Show results
-    sizes = get_file_sizes()
-    print("\n🎉 Build Results:")
-    print("-" * 30)
-    for filename, size in sizes.items():
-        print(f"📦 {filename}: {size}")
-    
-    print(f"\n✅ Build completed!")
-    print(f"📁 Files available in: {Path('dist').absolute()}")
-    
-    if "X4_Updater.exe" in sizes:
-        print("\n💡 Update Options:")
-        print("   • Distribute both executables for automatic update checking")
-        print("   • Distribute only 'X4 ShipMatrix.exe' for manual updates")
-        print("   • Users can check updates via Help → Check for Updates")
-    else:
-        print("\n💡 Update Method:")
-        print("   • Manual updates only (Help → Check for Updates opens GitHub)")
-        print("   • Users download new versions from GitHub releases")
-    
-    return 0
+    finally:
+        # Restore original directory
+        os.chdir(original_dir)
 
 if __name__ == "__main__":
     sys.exit(main())

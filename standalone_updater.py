@@ -18,7 +18,7 @@ import configparser
 from datetime import datetime, timedelta
 
 # Configuration
-CURRENT_VERSION = "0.1.3"
+CURRENT_VERSION = "0.2.1 alpha"
 GITHUB_REPO = "jongreg288/X4_ShipMatrix"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 MAIN_EXE_NAME = "X4 ShipMatrix.exe"

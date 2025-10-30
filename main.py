@@ -1,6 +1,6 @@
 # Made with the help of Claude, through Copilot. A labor borne of my desire to know which ship can carry the most and go the fastest.
 # You can reach me through GitHub @jongreg288
-from src.data_parser import load_ship_data, load_engine_data, parse_shields
+from src.data_parser import load_ship_data, load_engine_data, parse_shields, load_weapons_from_csv, load_turrets_from_csv
 from src.gui import ShipStatsApp
 from src.x4_data_extractor import setup_x4_data
 from src.loading_dialog import show_loading_dialog, update_loading_status, close_loading_dialog
@@ -25,7 +25,7 @@ def main():
     disclaimer = QMessageBox()
     disclaimer.setWindowTitle("X4 ShipMatrix - Disclaimer")
     disclaimer.setIcon(QMessageBox.Icon.Information)
-    disclaimer.setText("X4 ShipMatrix v0.1.3 Alpha")
+    disclaimer.setText("X4 ShipMatrix v0.2.1 Alpha")
     disclaimer.setInformativeText(
         "This is an unofficial, community-created tool for X4: Foundations.\n\n"
         "• This software is not affiliated with, endorsed by, or connected to Egosoft GmbH.\n"
@@ -65,7 +65,7 @@ def main():
     
     # Update loading status
     update_loading_status("📊 Loading engine data...")
-    engines_df = load_engine_data()  #load engines first
+    engines_df = load_engine_data()  # load engines first from all data locations
     
     update_loading_status("🚀 Loading ship data...")
     ships_df = load_ship_data(engines_df=engines_df)  #pass it in
@@ -85,9 +85,15 @@ def main():
     update_loading_status("🛡️ Loading shield data...")
     shields_df = parse_shields()
 
+    update_loading_status("⚔️ Loading weapons data...")
+    weapons_df = load_weapons_from_csv()
+
+    update_loading_status("🔫 Loading turrets data...")
+    turrets_df = load_turrets_from_csv()
+
     # Close loading dialog and show main window
     close_loading_dialog()
-    window = ShipStatsApp(ships_df, engines_df, shields_df)
+    window = ShipStatsApp(ships_df, engines_df, shields_df, weapons_df, turrets_df)
     window.show()
     sys.exit(app.exec())
 
