@@ -29,13 +29,13 @@ StringFileInfo(
   [
   StringTable(
     u'040904B0',
-    [StringStruct(u'CompanyName', u'X4 Ship Parser'),
-    StringStruct(u'FileDescription', u'X4 Ship Parser - Multi-Language Ship Statistics Analyzer'),
+    [StringStruct(u'CompanyName', u'X4 ShipMatrix'),
+    StringStruct(u'FileDescription', u'X4 ShipMatrix - Multi-Language Ship Statistics Analyzer'),
     StringStruct(u'FileVersion', u'0.1.1.0'),
-    StringStruct(u'InternalName', u'X4_Ship_Parser'),
+    StringStruct(u'InternalName', u'X4_ShipMatrix'),
     StringStruct(u'LegalCopyright', u'Made with Claude through Copilot'),
-    StringStruct(u'OriginalFilename', u'X4_Ship_Parser.exe'),
-    StringStruct(u'ProductName', u'X4 Ship Parser - Multi-Language Alpha'),
+    StringStruct(u'OriginalFilename', u'X4 ShipMatrix.exe'),
+    StringStruct(u'ProductName', u'X4 ShipMatrix - Multi-Language Alpha'),
     StringStruct(u'ProductVersion', u'0.1.1.0')])
   ]), 
 VarFileInfo([VarStruct(u'Translation', [1033, 1200])])

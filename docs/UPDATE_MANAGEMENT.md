@@ -1,8 +1,8 @@
-# X4 Ship Parser - Update Management Options (v1.0.0)
+# X4 ShipMatrix - Update Management Options (v1.0.0)
 
 ## Overview
 
-The X4 Ship Parser v1.0.0 provides **flexible update management** with a dual executable architecture designed to address network connectivity issues while providing reliable update functionality.
+The X4 ShipMatrix v1.0.0 provides **flexible update management** with a dual executable architecture designed to address network connectivity issues while providing reliable update functionality.
 
 ## 📦 Distribution Options
 

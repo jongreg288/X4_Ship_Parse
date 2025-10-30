@@ -1,6 +1,6 @@
 # Made with the help of Claude, through Copilot. A labor borne of my desire to know which ship can carry the most and go the fastest.
 # You can reach me through GitHub @jongreg288
-from src.data_parser import load_ship_data, load_engine_data
+from src.data_parser import load_ship_data, load_engine_data, parse_shields
 from src.gui import ShipStatsApp
 from src.x4_data_extractor import setup_x4_data
 from src.loading_dialog import show_loading_dialog, update_loading_status, close_loading_dialog
@@ -23,9 +23,9 @@ def main():
     
     # Show disclaimer dialog
     disclaimer = QMessageBox()
-    disclaimer.setWindowTitle("X4 Ship Parser - Disclaimer")
+    disclaimer.setWindowTitle("X4 ShipMatrix - Disclaimer")
     disclaimer.setIcon(QMessageBox.Icon.Information)
-    disclaimer.setText("X4 Ship Parser v0.1.1 Alpha")
+    disclaimer.setText("X4 ShipMatrix v0.1.3 Alpha")
     disclaimer.setInformativeText(
         "This is an unofficial, community-created tool for X4: Foundations.\n\n"
         "• This software is not affiliated with, endorsed by, or connected to Egosoft GmbH.\n"
@@ -56,7 +56,7 @@ def main():
             
             # Show error dialog in windowed mode
             if not (sys.stdout and hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()):
-                QMessageBox.warning(None, "X4 Ship Parser - Setup Required", 
+                QMessageBox.warning(None, "X4 ShipMatrix - Setup Required", 
                                   "Could not automatically set up X4 data.\n\n"
                                   "Please ensure X4: Foundations is installed and try again.\n"
                                   "Manual setup instructions are available in the README.")
@@ -77,14 +77,17 @@ def main():
         
         # Show error dialog in windowed mode (check if stdout is None or not a tty)
         if sys.stdout is None or not hasattr(sys.stdout, 'isatty') or not sys.stdout.isatty():
-            QMessageBox.critical(None, "X4 Ship Parser - No Data", 
+            QMessageBox.critical(None, "X4 ShipMatrix - No Data", 
                                "No ship data found!\n\n"
                                "Please ensure X4: Foundations is properly installed and try again.")
         return
 
+    update_loading_status("🛡️ Loading shield data...")
+    shields_df = parse_shields()
+
     # Close loading dialog and show main window
     close_loading_dialog()
-    window = ShipStatsApp(ships_df, engines_df)
+    window = ShipStatsApp(ships_df, engines_df, shields_df)
     window.show()
     sys.exit(app.exec())
 

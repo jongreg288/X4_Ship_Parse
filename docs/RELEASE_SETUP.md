@@ -1,4 +1,4 @@
-# Creating GitHub Release for X4 Ship Parser v1.0.0
+# Creating GitHub Release for X4 ShipMatrix v1.0.0
 
 ## 📋 Prerequisites
 
@@ -19,7 +19,7 @@
 2. **Release Configuration**:
    ```
    Tag version: v1.0.0
-   Release title: X4 Ship Parser v1.0.0 - Multi-Language Revolution!
+   Release title: X4 ShipMatrix v1.0.0 - Multi-Language Revolution!
    Target: main branch
    ```
 
@@ -30,7 +30,7 @@
 
 4. **Release Notes**:
    ```markdown
-   # X4 Ship Parser v1.0.0 - Multi-Language Revolution! 🌍
+   # X4 ShipMatrix v1.0.0 - Multi-Language Revolution! 🌍
 
    ## 🎉 Major Features
    - **Multi-Language Support**: Automatic detection of 14+ languages
@@ -63,7 +63,7 @@
 ```bash
 # Install GitHub CLI first
 gh release create v1.0.0 \
-  --title "X4 Ship Parser v1.0.0 - Multi-Language Revolution!" \
+  --title "X4 ShipMatrix v1.0.0 - Multi-Language Revolution!" \
   --notes-file release_notes.md \
   X4_Ship_Parser.exe \
   X4_Updater.exe
@@ -73,7 +73,7 @@ gh release create v1.0.0 \
 
 ```bash
 # Create and push tag
-git tag -a v1.0.0 -m "X4 Ship Parser v1.0.0"
+git tag -a v1.0.0 -m "X4 ShipMatrix v1.0.0"
 git push origin v1.0.0
 
 # Then go to GitHub web interface to upload files

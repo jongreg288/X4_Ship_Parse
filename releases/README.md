@@ -1,6 +1,6 @@
 # Release Management
 
-This directory manages release artifacts and version tracking for the X4 Ship Parser.
+This directory manages release artifacts and version tracking for the X4 ShipMatrix.
 
 ## Structure
 

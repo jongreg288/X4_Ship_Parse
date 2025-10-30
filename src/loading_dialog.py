@@ -13,7 +13,7 @@ class LoadingDialog(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("X4 Ship Parser - Loading")
+        self.setWindowTitle("X4 ShipMatrix - Loading")
         self.setFixedSize(400, 150)
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowTitleHint)
         

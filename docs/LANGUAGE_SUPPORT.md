@@ -1,8 +1,8 @@
-# X4 Ship Parser - Language Support (v1.0.0)
+# X4 ShipMatrix - Language Support (v1.0.0)
 
 ## Comprehensive Multi-Language System
 
-The X4 Ship Parser v1.0.0 includes **automatic language detection** and **comprehensive multi-language support** for all ship names, components, and interface elements!
+The X4 ShipMatrix v1.0.0 includes **automatic language detection** and **comprehensive multi-language support** for all ship names, components, and interface elements!
 
 ### ✨ Features
 
@@ -52,7 +52,7 @@ The parser supports all X4 language packs:
 ### 🛠️ Usage
 
 #### GUI Method (Recommended)
-1. Launch X4 Ship Parser
+1. Launch X4 ShipMatrix
 2. Go to **Settings → Language...**
 3. Choose automatic detection or select manually
 4. Click OK to apply changes
@@ -117,4 +117,4 @@ lang_name = language_detector.get_language_name()
 
 ---
 
-*This feature makes the X4 Ship Parser truly international! 🌍*
+*This feature makes the X4 ShipMatrix truly international! 🌍*

@@ -1,5 +1,5 @@
 """
-Build script for X4 Ship Parser with separate updater
+Build script for X4 ShipMatrix with separate updater
 Creates both the main application and optional updater executable
 """
 
@@ -43,43 +43,26 @@ def install_pyinstaller():
                           "Installing PyInstaller")
 
 def build_main_executable():
-    """Build the main X4 Ship Parser executable."""
-    return run_command([sys.executable, "-m", "PyInstaller", "X4_Ship_Parser.spec"], 
-                      "Building main X4_Ship_Parser.exe")
+    """Build the main X4 ShipMatrix executable."""
+    return run_command([sys.executable, "-m", "PyInstaller", "X4_ShipMatrix.spec"], 
+                      "Building main X4 ShipMatrix.exe")
 
 def build_updater_executable():
     """Build the optional updater executable."""
     return run_command([sys.executable, "-m", "PyInstaller", "X4_Updater.spec"], 
                       "Building X4_Updater.exe")
 
-def copy_to_distro():
-    """Copy executables to distro directory."""
-    distro_dir = Path("../distro")
-    distro_dir.mkdir(exist_ok=True)
-    
-    # Copy main executable
-    main_exe = Path("dist/X4_Ship_Parser.exe")
-    if main_exe.exists():
-        shutil.copy2(main_exe, distro_dir / "X4_Ship_Parser.exe")
-        print("✅ Copied X4_Ship_Parser.exe to distro directory")
-    
-    # Copy updater executable (optional)
-    updater_exe = Path("dist/X4_Updater.exe")
-    if updater_exe.exists():
-        shutil.copy2(updater_exe, distro_dir / "X4_Updater.exe")
-        print("✅ Copied X4_Updater.exe to distro directory")
-
 def get_file_sizes():
     """Get and display file sizes."""
-    distro_dir = Path("../distro")
+    dist_dir = Path("dist")
     
-    main_exe = distro_dir / "X4_Ship_Parser.exe"
-    updater_exe = distro_dir / "X4_Updater.exe"
+    main_exe = dist_dir / "X4 ShipMatrix.exe"
+    updater_exe = dist_dir / "X4_Updater.exe"
     
     sizes = {}
     if main_exe.exists():
         size_mb = main_exe.stat().st_size / (1024 * 1024)
-        sizes["X4_Ship_Parser.exe"] = f"{size_mb:.1f} MB"
+        sizes["X4 ShipMatrix.exe"] = f"{size_mb:.1f} MB"
     
     if updater_exe.exists():
         size_mb = updater_exe.stat().st_size / (1024 * 1024)
@@ -89,7 +72,7 @@ def get_file_sizes():
 
 def main():
     """Main build process."""
-    print("🔨 Building X4 Ship Parser with Optional Updater")
+    print("🔨 Building X4 ShipMatrix with Optional Updater")
     print("=" * 50)
     
     # Check prerequisites
@@ -111,9 +94,6 @@ def main():
     if not updater_success:
         print("⚠️ Updater build failed - continuing without updater")
     
-    # Copy to distro
-    copy_to_distro()
-    
     # Show results
     sizes = get_file_sizes()
     print("\n🎉 Build Results:")
@@ -122,12 +102,12 @@ def main():
         print(f"📦 {filename}: {size}")
     
     print(f"\n✅ Build completed!")
-    print(f"📁 Files available in: {Path('../distro').absolute()}")
+    print(f"📁 Files available in: {Path('dist').absolute()}")
     
     if "X4_Updater.exe" in sizes:
         print("\n💡 Update Options:")
         print("   • Distribute both executables for automatic update checking")
-        print("   • Distribute only X4_Ship_Parser.exe for manual updates")
+        print("   • Distribute only 'X4 ShipMatrix.exe' for manual updates")
         print("   • Users can check updates via Help → Check for Updates")
     else:
         print("\n💡 Update Method:")

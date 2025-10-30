@@ -363,6 +363,50 @@ def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
                 else:
                     engine_connections = 1  # Default fallback when no component file found
 
+            # Count shield connections and determine shield size class
+            shield_connections = 0
+            shield_size_class = None
+            if component_ref:
+                # Look for the component file in the parent directory (not macros subfolder)
+                component_file = xml_file.parent.parent / f"{component_ref}.xml"
+                if component_file.exists():
+                    try:
+                        comp_tree = ET.parse(component_file)
+                        comp_root = comp_tree.getroot()
+                        # Count connections with "shield" in tags and extract size class
+                        shield_conns = [
+                            conn for conn in comp_root.findall(".//connection")
+                            if conn.get("tags") and "shield" in conn.get("tags", "")
+                        ]
+                        shield_connections = len(shield_conns)
+                        
+                        # Extract shield size class from first shield connection
+                        if shield_conns:
+                            tags = shield_conns[0].get("tags", "")
+                            # Look for size indicators in tags: "small shield", "medium shield", "large shield", etc.
+                            if "small" in tags:
+                                shield_size_class = "s"
+                            elif "medium" in tags:
+                                shield_size_class = "m"  
+                            elif "large" in tags:
+                                shield_size_class = "l"
+                            elif "extralarge" in tags or "xl" in tags:
+                                shield_size_class = "xl"
+                            # If no explicit size, try to infer from ship size in filename
+                            elif not shield_size_class:
+                                if "size_s" in str(xml_file):
+                                    shield_size_class = "s"
+                                elif "size_m" in str(xml_file):
+                                    shield_size_class = "m"
+                                elif "size_l" in str(xml_file):
+                                    shield_size_class = "l"
+                                elif "size_xl" in str(xml_file):
+                                    shield_size_class = "xl"
+                    except ET.ParseError:
+                        print(f"⚠️ Failed to parse component file {component_file} for shield data")
+                        shield_connections = 0
+                        shield_size_class = None
+
             # Check ship type and skip drones and non-ships
             ship_el = props.find("ship")
             ship_type = ship_el.get("type") if ship_el is not None else None
@@ -409,12 +453,15 @@ def load_ship_data(engines_df: pd.DataFrame) -> pd.DataFrame:
                 "storage_cargo_max": storage_cargo_max,
                 "storage_cargo_type": storage_cargo_type,
                 "purpose_primary": purpose_primary,
+                "ship_type": ship_type,
                 "mass": mass,
                 "drag (forward)": drag_forward,
                 "drag (reverse)": drag_reverse,
                 "drag (horizontal)": drag_horizontal,
                 "drag (vertical)": drag_vertical,
                 "engine_connections": engine_connections,
+                "shield_connections": shield_connections,
+                "shield_size_class": shield_size_class,
                 "component_ref": component_ref,
                 "file": str(xml_file)
             })
@@ -534,4 +581,113 @@ def load_engine_data(engine_dir="./data/assets/props/Engines/macros"):
 
     df = pd.DataFrame(engines)
     print(f"Loaded {len(df)} engines from {engine_dir}")
+    return df
+
+def parse_shields():
+    """Parse shield data from X4 shield macro files."""
+    shield_dir = Path("data/assets/props/SurfaceElements/macros")
+    shields = []
+    
+    if not shield_dir.exists():
+        print(f"Shield directory not found: {shield_dir}")
+        return pd.DataFrame()
+    
+    # Find all shield macro files
+    shield_files = list(shield_dir.glob("shield_*.xml"))
+    
+    for shield_file in shield_files:
+        try:
+            tree = ET.parse(shield_file)
+            root = tree.getroot()
+            
+            # Find macro element with class="shieldgenerator"
+            macro_elem = root.find(".//macro[@class='shieldgenerator']")
+            if macro_elem is None:
+                continue
+                
+            macro_name = macro_elem.get("name", "")
+            if not macro_name:
+                continue
+            
+            # Extract identification properties
+            identification = macro_elem.find(".//identification")
+            name_ref = identification.get("name", "") if identification is not None else ""
+            basename_ref = identification.get("basename", "") if identification is not None else ""
+            shortname_ref = identification.get("shortname", "") if identification is not None else ""
+            description_ref = identification.get("description", "") if identification is not None else ""
+            maker_race = identification.get("makerrace", "") if identification is not None else ""
+            mk = identification.get("mk", "") if identification is not None else ""
+            
+            # Extract shield properties
+            recharge_elem = macro_elem.find(".//recharge")
+            recharge_max = 0
+            recharge_rate = 0
+            recharge_delay = 0
+            if recharge_elem is not None:
+                recharge_max = int(recharge_elem.get("max", "0"))
+                recharge_rate = int(recharge_elem.get("rate", "0"))
+                recharge_delay = float(recharge_elem.get("delay", "0"))
+            
+            # Extract hull properties (shield module hull)
+            hull_elem = macro_elem.find(".//hull")
+            hull_max = 0
+            hull_threshold = 0
+            if hull_elem is not None:
+                hull_max = int(hull_elem.get("max", "0"))
+                hull_threshold = float(hull_elem.get("threshold", "0"))
+            
+            # Determine shield size from macro name
+            shield_size = None
+            macro_lower = macro_name.lower()
+            if "_s_" in macro_lower:
+                shield_size = "s"
+            elif "_m_" in macro_lower:
+                shield_size = "m"
+            elif "_l_" in macro_lower:
+                shield_size = "l"
+            elif "_xl_" in macro_lower:
+                shield_size = "xl"
+                
+            # Resolve display name using text mappings
+            display_name = macro_name  # Default fallback
+            
+            # Try basename first, then name, similar to engine logic
+            if basename_ref:
+                resolved_basename = resolve_text_reference_advanced(basename_ref)
+                if resolved_basename:
+                    base_name = resolved_basename
+                    # Add mark/version info if available
+                    if mk:
+                        display_name = f"{base_name} Mk{mk}"
+                    else:
+                        display_name = base_name
+            elif name_ref:
+                resolved_name = resolve_text_reference_advanced(name_ref)
+                if resolved_name:
+                    display_name = resolved_name
+            
+            shields.append({
+                "name": macro_name,
+                "display_name": display_name,
+                "basename_ref": basename_ref,
+                "name_ref": name_ref,
+                "shortname_ref": shortname_ref,
+                "description_ref": description_ref,
+                "maker_race": maker_race,
+                "mk": mk,
+                "shield_size": shield_size,
+                "recharge_max": recharge_max,
+                "recharge_rate": recharge_rate,
+                "recharge_delay": recharge_delay,
+                "hull_max": hull_max,
+                "hull_threshold": hull_threshold
+            })
+            
+        except ET.ParseError as e:
+            print(f"Error parsing {shield_file}: {e}")
+        except Exception as e:
+            print(f"Unexpected error parsing {shield_file}: {e}")
+    
+    df = pd.DataFrame(shields)
+    print(f"Loaded {len(df)} shields from {shield_dir}")
     return df

@@ -166,7 +166,7 @@ cython_debug/
 *.code-workspace
 
 # ===================================
-# X4 Ship Parser Specific Configuration
+# X4 ShipMatrix Specific Configuration
 # ===================================
 
 # X4 Game Data Files (large and copyrighted - auto-extracted)
@@ -181,15 +181,15 @@ data/
 !data/README.md
 
 # Build Artifacts
-build/
-dist/  # Temporary PyInstaller output (gets copied to distro/)
-distro/*.exe
-distro/*.dll
-distro/data/
-# Keep user documentation and tools in distro/
-!distro/README_USERS.txt
-!distro/Readme.txt
-!distro/XRCatTool*.exe
+build_scripts/build/  # PyInstaller build artifacts
+build_scripts/dist/*.exe  # Built executables (too large for git)
+build_scripts/dist/*.dll  # Runtime DLLs
+build_scripts/dist/data/  # Auto-extracted game data
+
+# Keep documentation and supporting files in dist/
+!build_scripts/dist/README_USERS.txt
+!build_scripts/dist/Readme.txt
+!build_scripts/dist/XRCatTool*.exe
 
 # Temporary and Debug Files  
 debug_*.py
@@ -197,8 +197,14 @@ temp_*.py
 check_*.py
 analysis_*.py
 final_verification.py
-# Tests are now in tests/ directory and should be tracked
-# test_*.py
+
+# Tests Directory - Track all test files and analysis scripts
+# Tests are now in src/tests/ directory and should be tracked
+!src/tests/
+!src/tests/*.py
+!src/tests/*.csv
+!tests/
+!tests/*.py
 
 # Output and Export Files
 output/

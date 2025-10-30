@@ -1,8 +1,8 @@
-# X4 Ship Parser - Update Summary
+# X4 ShipMatrix - Update Summary
 ## Version 0.1.1 Alpha Release
 
 ### Overview
-This summary documents the comprehensive evolution of the X4 Ship Parser project from initial development through the major 0.1.1 alpha release, including multi-language support, data filtering enhancements, GUI improvements, and the addition of a dual executable update system.
+This summary documents the comprehensive evolution of the X4 ShipMatrix project from initial development through the major 0.1.1 alpha release, including multi-language support, data filtering enhancements, GUI improvements, and the addition of a dual executable update system.
 
 ---
 
@@ -308,4 +308,4 @@ X4_Ship_Parse/
 - **Release Process**: GitHub releases with automatic update detection
 - **Documentation**: Comprehensive change tracking and user guidance
 
-This update represents a significant maturation of the X4 Ship Parser from a basic analysis tool to a professional application with automatic updates, refined data, and enhanced user experience.
+This update represents a significant maturation of the X4 ShipMatrix from a basic analysis tool to a professional application with automatic updates, refined data, and enhanced user experience.
