@@ -1,4 +1,4 @@
-# X4 Ship Parse
+# X4 ShipMatrix
 
 A comprehensive Python application for parsing and analyzing X4: Foundations ship data with **multi-language support** and **intelligent data extraction**.
 
